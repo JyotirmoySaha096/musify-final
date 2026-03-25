@@ -14,7 +14,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('songs')
 export class SongsController {
-  constructor(private songsService: SongsService) { }
+  constructor(private songsService: SongsService) {}
 
   @Get()
   findAll(@Query('limit') limit?: string) {

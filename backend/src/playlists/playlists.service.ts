@@ -31,7 +31,8 @@ export class PlaylistsService {
   }
 
   async findOne(id: string) {
-    const { Playlist, PlaylistSong, User, Song, Artist, Album } = this.db.models as any;
+    const { Playlist, PlaylistSong, User, Song, Artist, Album } = this.db
+      .models as any;
     const playlist = await Playlist.findOne({
       where: { id },
       include: [

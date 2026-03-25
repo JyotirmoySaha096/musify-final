@@ -113,7 +113,8 @@ export async function seed(models: any) {
   );
 
   // Create songs — each song uses a sample audio URL
-  const sampleAudioUrl = 'http://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3';
+  const sampleAudioUrl =
+    'http://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3';
 
   const songsData = [
     // Neon Dreams

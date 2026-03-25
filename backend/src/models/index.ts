@@ -21,8 +21,14 @@ export function initModels(sequelize: Sequelize) {
   Playlist.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
   // Playlist -> PlaylistSongs -> Song
-  Playlist.hasMany(PlaylistSong, { foreignKey: 'playlistId', as: 'playlistSongs' });
-  PlaylistSong.belongsTo(Playlist, { foreignKey: 'playlistId', as: 'playlist' });
+  Playlist.hasMany(PlaylistSong, {
+    foreignKey: 'playlistId',
+    as: 'playlistSongs',
+  });
+  PlaylistSong.belongsTo(Playlist, {
+    foreignKey: 'playlistId',
+    as: 'playlist',
+  });
   PlaylistSong.belongsTo(Song, { foreignKey: 'songId', as: 'song' });
   Song.hasMany(PlaylistSong, { foreignKey: 'songId', as: 'playlistSongs' });
 
@@ -53,4 +59,3 @@ export function initModels(sequelize: Sequelize) {
     LikedSong,
   };
 }
-

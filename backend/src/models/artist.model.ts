@@ -33,4 +33,3 @@ export function initArtistModel(sequelize: Sequelize) {
 
   return Artist;
 }
-

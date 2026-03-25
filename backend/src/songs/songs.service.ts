@@ -71,7 +71,12 @@ export class SongsService {
    *     the total file size or split the download.
    *  5. `X-Content-Type-Options: nosniff` is set to prevent MIME sniffing.
    */
-  async streamAudio(songId: string, token: string, range: string | undefined, res: any) {
+  async streamAudio(
+    songId: string,
+    token: string,
+    range: string | undefined,
+    res: any,
+  ) {
     // 1. Validate the stream token
     let payload: StreamTokenPayload;
     try {
@@ -83,12 +88,14 @@ export class SongsService {
     }
 
     if (payload.type !== 'stream' || payload.songId !== songId) {
-      throw new UnauthorizedException('Token does not match the requested song');
+      throw new UnauthorizedException(
+        'Token does not match the requested song',
+      );
     }
 
     // 2. Load the song to get the real audio URL
     const song = await this.findOne(songId);
-    const audioUrl = (song as any).audioUrl;
+    const audioUrl = song.audioUrl;
 
     const client = audioUrl.startsWith('https') ? https : http;
 
@@ -104,7 +111,11 @@ export class SongsService {
         res.setHeader('Cache-Control', 'no-store');
 
         // Forward headers needed for seeking & chunked playback
-        const headersToForward = ['content-type', 'content-range', 'accept-ranges'];
+        const headersToForward = [
+          'content-type',
+          'content-range',
+          'accept-ranges',
+        ];
         headersToForward.forEach((h) => {
           if (audioRes.headers[h]) {
             res.setHeader(h, audioRes.headers[h] as string);

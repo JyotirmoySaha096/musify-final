@@ -32,4 +32,3 @@ export function initLikedSongModel(sequelize: Sequelize) {
 
   return LikedSong;
 }
-

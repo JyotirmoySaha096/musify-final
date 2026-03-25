@@ -43,4 +43,3 @@ export function initUserModel(sequelize: Sequelize) {
 
   return User;
 }
-

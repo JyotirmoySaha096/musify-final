@@ -39,4 +39,3 @@ export function initPlaylistModel(sequelize: Sequelize) {
 
   return Playlist;
 }
-

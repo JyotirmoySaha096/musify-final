@@ -38,4 +38,3 @@ export function initPlaylistSongModel(sequelize: Sequelize) {
 
   return PlaylistSong;
 }
-

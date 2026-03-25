@@ -21,7 +21,11 @@ export class AlbumsService {
       where: { id },
       include: [
         { model: Artist, as: 'artist' },
-        { model: Song, as: 'songs', include: [{ model: Artist, as: 'artist' }] },
+        {
+          model: Song,
+          as: 'songs',
+          include: [{ model: Artist, as: 'artist' }],
+        },
       ],
     });
 
@@ -29,8 +33,8 @@ export class AlbumsService {
       throw new NotFoundException('Album not found');
     }
     // Sort songs by track number
-    if ((album as any).songs) {
-      (album as any).songs.sort(
+    if (album.songs) {
+      album.songs.sort(
         (a: any, b: any) => (a.trackNumber || 0) - (b.trackNumber || 0),
       );
     }

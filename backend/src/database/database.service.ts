@@ -28,7 +28,7 @@ export class DatabaseService implements OnModuleInit {
           require: true,
           rejectUnauthorized: false,
         },
-      }
+      },
     });
 
     this.models = initModels(this.sequelize);
@@ -39,4 +39,3 @@ export class DatabaseService implements OnModuleInit {
     await this.sequelize.authenticate();
   }
 }
-

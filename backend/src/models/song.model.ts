@@ -48,4 +48,3 @@ export function initSongModel(sequelize: Sequelize) {
 
   return Song;
 }
-

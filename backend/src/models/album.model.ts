@@ -38,4 +38,3 @@ export function initAlbumModel(sequelize: Sequelize) {
 
   return Album;
 }
-
