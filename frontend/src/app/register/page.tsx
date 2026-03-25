@@ -70,7 +70,7 @@ export default function RegisterPage() {
             ♪
           </Avatar>
           <Typography variant="h5" fontWeight={800}>
-            Sign up for Spotify
+            Sign up for Musify
           </Typography>
           <Typography variant="body2" color="text.disabled" sx={{ mt: 1 }}>
             Create a free account

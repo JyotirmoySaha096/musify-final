@@ -43,15 +43,15 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <Box sx={{ p: '24px 32px' }}>
+      <Box sx={{ p: { xs: 2, sm: '24px 32px' } }}>
         <Skeleton variant="text" width={300} height={48} sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 1, mb: 4 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(auto-fill, minmax(280px, 1fr))' }, gap: 1, mb: 4 }}>
           {[...Array(6)].map((_, i) => (
             <Skeleton key={i} variant="rounded" height={60} sx={{ bgcolor: 'rgba(255,255,255,0.07)' }} />
           ))}
         </Box>
         <Skeleton variant="text" width={200} height={36} sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.1)' }} />
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 3 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(auto-fill, minmax(130px, 1fr))', md: 'repeat(auto-fill, minmax(180px, 1fr))' }, gap: { xs: 1.5, md: 3 } }}>
           {[...Array(6)].map((_, i) => (
             <Skeleton key={i} variant="rounded" height={240} sx={{ bgcolor: 'rgba(255,255,255,0.07)' }} />
           ))}
@@ -61,12 +61,13 @@ export default function HomePage() {
   }
 
   return (
-    <Box sx={{ p: '24px 32px' }}>
+    <Box sx={{ p: { xs: 2, sm: '24px 32px' } }}>
       <Typography
         variant="h4"
         sx={{
           fontWeight: 800,
           mb: 3,
+          fontSize: { xs: '1.5rem', sm: '2.125rem' },
           background: 'linear-gradient(90deg, #fff 0%, #b3b3b3 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
@@ -80,7 +81,11 @@ export default function HomePage() {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(auto-fill, minmax(250px, 1fr))',
+              md: 'repeat(auto-fill, minmax(280px, 1fr))',
+            },
             gap: 1,
             mb: 4,
           }}
@@ -110,19 +115,19 @@ export default function HomePage() {
             >
               <Box
                 sx={{
-                  width: 60,
-                  height: 60,
+                  width: { xs: 48, sm: 60 },
+                  height: { xs: 48, sm: 60 },
                   bgcolor: '#242424',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 24,
+                  fontSize: { xs: 20, sm: 24 },
                   flexShrink: 0,
                 }}
               >
                 💿
               </Box>
-              <Typography variant="body2" fontWeight={700} noWrap sx={{ flex: 1, px: 2 }}>
+              <Typography variant="body2" fontWeight={700} noWrap sx={{ flex: 1, px: 2, fontSize: { xs: 12, sm: 14 } }}>
                 {album.title}
               </Typography>
               <Fab
@@ -145,9 +150,9 @@ export default function HomePage() {
       )}
 
       {/* Featured Albums */}
-      <Box component="section" sx={{ mb: 5 }}>
+      <Box component="section" sx={{ mb: { xs: 3, sm: 5 } }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
-          <Typography variant="h5" fontWeight={700}>
+          <Typography variant="h5" fontWeight={700} sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>
             Popular Albums
           </Typography>
           <Typography
@@ -181,9 +186,9 @@ export default function HomePage() {
       </Box>
 
       {/* Artists */}
-      <Box component="section" sx={{ mb: 5 }}>
+      <Box component="section" sx={{ mb: { xs: 3, sm: 5 } }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
-          <Typography variant="h5" fontWeight={700}>
+          <Typography variant="h5" fontWeight={700} sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>
             Popular Artists
           </Typography>
           <Typography
@@ -219,9 +224,9 @@ export default function HomePage() {
 
       {/* Recently Added Songs */}
       {songs.length > 0 && (
-        <Box component="section" sx={{ mb: 5 }}>
+        <Box component="section" sx={{ mb: { xs: 3, sm: 5 } }}>
           <Box sx={{ mb: 2.5 }}>
-            <Typography variant="h5" fontWeight={700}>
+            <Typography variant="h5" fontWeight={700} sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>
               Tracks For You
             </Typography>
           </Box>

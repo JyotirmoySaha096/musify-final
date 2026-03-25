@@ -10,7 +10,6 @@ async function run() {
     process.env.DB_USER || 'spotify',
     process.env.DB_PASSWORD || 'spotify_secret',
     {
-      // `sequelize-cli` + runtime uses `dialect: 'postgres'` for Postgres.
       host: process.env.DB_HOST || 'localhost',
       port: parseInt(process.env.DB_PORT || '5432', 10),
       dialect: 'postgres',
@@ -18,12 +17,14 @@ async function run() {
       define: {
         underscored: false,
       },
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
-      },
+      ...((process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1') && {
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false
+          }
+        }
+      })
     },
   );
 

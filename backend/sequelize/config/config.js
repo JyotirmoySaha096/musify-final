@@ -12,12 +12,14 @@ module.exports = {
     password: process.env.DB_PASSWORD || 'spotify_secret',
     database: process.env.DB_NAME || 'spotify_clone',
     logging: false,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
+    ...(process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1' && {
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
       }
-    }
+    })
   },
   test: {
     dialect: 'postgres',
@@ -27,12 +29,14 @@ module.exports = {
     password: process.env.DB_PASSWORD || 'spotify_secret',
     database: process.env.DB_NAME || 'spotify_clone',
     logging: false,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
+    ...(process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1' && {
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
       }
-    }
+    })
   },
   production: {
     dialect: 'postgres',
@@ -42,12 +46,14 @@ module.exports = {
     password: process.env.DB_PASSWORD || 'spotify_secret',
     database: process.env.DB_NAME || 'spotify_clone',
     logging: false,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
+    ...(process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1' && {
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
       }
-    }
+    })
   },
 };
 

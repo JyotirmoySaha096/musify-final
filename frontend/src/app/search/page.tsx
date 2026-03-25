@@ -61,7 +61,7 @@ export default function SearchPage() {
   }, [query, doSearch]);
 
   return (
-    <Box sx={{ p: '24px 32px' }}>
+    <Box sx={{ p: { xs: 2, sm: '24px 32px' } }}>
       {/* Search Header */}
       <Box sx={{ position: 'sticky', top: 0, bgcolor: 'background.default', py: 2, pb: 3, zIndex: 10 }}>
         <TextField
@@ -102,14 +102,14 @@ export default function SearchPage() {
       {/* Browse All - Genre Grid */}
       {!query.trim() && !results && (
         <>
-          <Typography variant="h5" fontWeight={700} sx={{ mb: 2.5 }}>
+          <Typography variant="h5" fontWeight={700} sx={{ mb: 2.5, fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>
             Browse All
           </Typography>
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-              gap: 2,
+              gridTemplateColumns: { xs: 'repeat(auto-fill, minmax(140px, 1fr))', sm: 'repeat(auto-fill, minmax(180px, 1fr))' },
+              gap: { xs: 1.5, sm: 2 },
             }}
           >
             {GENRES.map((genre) => (
@@ -118,7 +118,7 @@ export default function SearchPage() {
                 elevation={0}
                 onClick={() => setQuery(genre.name)}
                 sx={{
-                  height: 120,
+                  height: { xs: 100, sm: 120 },
                   borderRadius: 2,
                   display: 'flex',
                   alignItems: 'flex-end',

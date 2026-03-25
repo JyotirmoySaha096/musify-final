@@ -8,6 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
 import Paper from '@mui/material/Paper';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -31,6 +33,7 @@ function formatTime(seconds: number): string {
 }
 
 const PLAYER_HEIGHT = 90;
+const PLAYER_HEIGHT_MOBILE = 64;
 
 export default function PlayerBar() {
   const {
@@ -50,12 +53,16 @@ export default function PlayerBar() {
     toggleRepeat,
   } = usePlayer();
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+
   if (!currentTrack) {
     return (
       <Paper
         elevation={0}
         sx={{
-          height: PLAYER_HEIGHT,
+          height: { xs: PLAYER_HEIGHT_MOBILE, sm: PLAYER_HEIGHT },
           bgcolor: '#181818',
           borderTop: 1,
           borderColor: 'divider',
@@ -87,6 +94,94 @@ export default function PlayerBar() {
           ? VolumeDownIcon
           : VolumeUpIcon;
 
+  // ─── Mobile: compact player (track info + prev/play/next) ───
+  if (isMobile) {
+    return (
+      <Paper
+        elevation={0}
+        sx={{
+          height: PLAYER_HEIGHT_MOBILE,
+          bgcolor: '#181818',
+          borderTop: 1,
+          borderColor: 'divider',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+        }}
+      >
+        {/* Mini progress bar at top */}
+        <Box sx={{ width: '100%', px: 0 }}>
+          <Slider
+            value={progress}
+            onChange={(_, val) => seek(((val as number) / 100) * duration)}
+            size="small"
+            sx={{
+              p: 0,
+              height: 2,
+              borderRadius: 0,
+              '& .MuiSlider-thumb': { display: 'none' },
+              '& .MuiSlider-rail': { opacity: 0.15 },
+            }}
+          />
+        </Box>
+        <Stack
+          direction="row"
+          alignItems="center"
+          sx={{ flex: 1, px: 1.5, gap: 1 }}
+        >
+          {/* Track info */}
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: 1,
+              bgcolor: 'background.default',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <MusicNoteIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography variant="body2" fontWeight={500} noWrap sx={{ fontSize: 13 }}>
+              {currentTrack.title}
+            </Typography>
+            <Typography variant="caption" color="text.disabled" noWrap sx={{ display: 'block', fontSize: 11 }}>
+              {currentTrack.artist?.name}
+            </Typography>
+          </Box>
+
+          {/* Controls */}
+          <IconButton size="small" onClick={previous} sx={{ color: 'text.secondary' }}>
+            <SkipPreviousIcon sx={{ fontSize: 20 }} />
+          </IconButton>
+          <IconButton
+            onClick={togglePlay}
+            sx={{
+              bgcolor: 'text.primary',
+              color: 'background.default',
+              width: 32,
+              height: 32,
+              '&:hover': { bgcolor: '#fff' },
+            }}
+          >
+            {isPlaying ? <PauseIcon sx={{ fontSize: 18 }} /> : <PlayArrowIcon sx={{ fontSize: 18 }} />}
+          </IconButton>
+          <IconButton size="small" onClick={next} sx={{ color: 'text.secondary' }}>
+            <SkipNextIcon sx={{ fontSize: 20 }} />
+          </IconButton>
+        </Stack>
+      </Paper>
+    );
+  }
+
+  // ─── Desktop / Tablet: full player ───
   return (
     <Paper
       elevation={0}
@@ -96,7 +191,7 @@ export default function PlayerBar() {
         borderTop: 1,
         borderColor: 'divider',
         display: 'grid',
-        gridTemplateColumns: '1fr 2fr 1fr',
+        gridTemplateColumns: isTablet ? '1fr 2fr' : '1fr 2fr 1fr',
         alignItems: 'center',
         px: 2,
         position: 'fixed',
@@ -206,22 +301,24 @@ export default function PlayerBar() {
         </Stack>
       </Box>
 
-      {/* Right: Volume */}
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
-        <IconButton
-          size="small"
-          onClick={() => setVolume(volume === 0 ? 0.7 : 0)}
-          sx={{ color: 'text.secondary' }}
-        >
-          <VolumeIcon fontSize="small" />
-        </IconButton>
-        <Slider
-          value={volume * 100}
-          onChange={(_, val) => setVolume((val as number) / 100)}
-          size="small"
-          sx={{ width: 100 }}
-        />
-      </Stack>
+      {/* Right: Volume (hidden on tablet) */}
+      {!isTablet && (
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
+          <IconButton
+            size="small"
+            onClick={() => setVolume(volume === 0 ? 0.7 : 0)}
+            sx={{ color: 'text.secondary' }}
+          >
+            <VolumeIcon fontSize="small" />
+          </IconButton>
+          <Slider
+            value={volume * 100}
+            onChange={(_, val) => setVolume((val as number) / 100)}
+            size="small"
+            sx={{ width: 100 }}
+          />
+        </Stack>
+      )}
     </Paper>
   );
 }

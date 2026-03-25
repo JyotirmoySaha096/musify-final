@@ -50,7 +50,7 @@ function LibraryContent() {
 
   if (!user) {
     return (
-      <Box sx={{ p: '24px 32px' }}>
+      <Box sx={{ p: { xs: 2, sm: '24px 32px' } }}>
         <Box sx={{ textAlign: 'center', py: 10 }}>
           <LibraryMusicIcon sx={{ fontSize: 48, mb: 2, color: 'text.disabled' }} />
           <Typography variant="h5" fontWeight={700} sx={{ mb: 1 }}>
@@ -75,10 +75,10 @@ function LibraryContent() {
   const tabIndex = tab === 'liked' ? 1 : 0;
 
   return (
-    <Box sx={{ p: '24px 32px' }}>
+    <Box sx={{ p: { xs: 2, sm: '24px 32px' } }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" fontWeight={800} sx={{ mb: 2.5 }}>
+        <Typography variant="h4" fontWeight={800} sx={{ mb: 2.5, fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
           Your Library
         </Typography>
         <Tabs

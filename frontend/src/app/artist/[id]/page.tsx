@@ -50,7 +50,6 @@ export default function ArtistPage() {
 
   const allSongs = artist.songs || [];
 
-  // Compare queue by identity to distinguish same song in different contexts
   const isThisContextActive =
     currentTrack && allSongs.length > 0 &&
     allSongs.some((s: any) => s.id === currentTrack.id) &&
@@ -72,23 +71,25 @@ export default function ArtistPage() {
       <Box
         sx={{
           display: 'flex',
-          alignItems: 'flex-end',
-          gap: 3,
-          p: '40px 32px 24px',
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'center', sm: 'flex-end' },
+          gap: { xs: 2, sm: 3 },
+          p: { xs: '24px 16px 20px', sm: '40px 32px 24px' },
           background: 'linear-gradient(180deg, rgba(140,103,172,0.4) 0%, #121212 100%)',
-          minHeight: 280,
+          minHeight: { xs: 'auto', sm: 280 },
+          textAlign: { xs: 'center', sm: 'left' },
         }}
       >
         <Box
           sx={{
-            width: 232,
-            height: 232,
+            width: { xs: 160, sm: 200, md: 232 },
+            height: { xs: 160, sm: 200, md: 232 },
             borderRadius: '50%',
             bgcolor: '#242424',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 80,
+            fontSize: { xs: 56, sm: 72, md: 80 },
             flexShrink: 0,
             boxShadow: '0 16px 48px rgba(0,0,0,0.6)',
             animation: 'scaleIn 0.4s ease',
@@ -109,6 +110,7 @@ export default function ArtistPage() {
               fontWeight: 900,
               lineHeight: 1.1,
               mb: 1.5,
+              fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' },
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               display: '-webkit-box',
@@ -127,25 +129,25 @@ export default function ArtistPage() {
       </Box>
 
       {/* Controls */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, px: 4, py: 2.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, px: { xs: 2, sm: 4 }, py: 2.5 }}>
         <Fab
           color="primary"
           onClick={handlePlayAll}
           sx={{
-            width: 56,
-            height: 56,
+            width: { xs: 48, sm: 56 },
+            height: { xs: 48, sm: 56 },
             '&:hover': { transform: 'scale(1.06)', bgcolor: 'primary.light' },
           }}
         >
-          {isThisContextPlaying ? <PauseIcon sx={{ fontSize: 28 }} /> : <PlayArrowIcon sx={{ fontSize: 28 }} />}
+          {isThisContextPlaying ? <PauseIcon sx={{ fontSize: { xs: 24, sm: 28 } }} /> : <PlayArrowIcon sx={{ fontSize: { xs: 24, sm: 28 } }} />}
         </Fab>
       </Box>
 
       {/* Content */}
-      <Box sx={{ px: 4, pb: 4 }}>
+      <Box sx={{ px: { xs: 1, sm: 4 }, pb: 4 }}>
         {allSongs.length > 0 && (
           <>
-            <Typography variant="h5" fontWeight={700} sx={{ mb: 2, mt: 2 }}>
+            <Typography variant="h5" fontWeight={700} sx={{ mb: 2, mt: 2, fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>
               Popular
             </Typography>
             <TrackList tracks={allSongs.slice(0, 5)} showHeader={false} />
@@ -154,7 +156,7 @@ export default function ArtistPage() {
 
         {artist.albums?.length > 0 && (
           <>
-            <Typography variant="h5" fontWeight={700} sx={{ mb: 2, mt: 4 }}>
+            <Typography variant="h5" fontWeight={700} sx={{ mb: 2, mt: 4, fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>
               Discography
             </Typography>
             <CardGrid>

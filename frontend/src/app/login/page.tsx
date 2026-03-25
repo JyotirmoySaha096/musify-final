@@ -69,7 +69,7 @@ export default function LoginPage() {
             ♪
           </Avatar>
           <Typography variant="h5" fontWeight={800}>
-            Log in to Spotify
+            Log in to Musify
           </Typography>
         </Box>
 
@@ -142,7 +142,7 @@ export default function LoginPage() {
               '&:hover': { color: 'primary.main' },
             }}
           >
-            Sign up for Spotify
+            Sign up for Musify
           </Typography>
         </Typography>
       </Paper>

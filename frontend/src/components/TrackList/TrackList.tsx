@@ -12,6 +12,8 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { usePlayer } from '@/context/PlayerContext';
@@ -50,10 +52,15 @@ export default function TrackList({
   onRemovedFromPlaylist,
 }: TrackListProps) {
   const { playTrack, currentTrack, isPlaying } = usePlayer();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handlePlayTrack = (track: Track, index: number) => {
     playTrack(track, tracks, index);
   };
+
+  // Hide album column on mobile regardless of showAlbum prop
+  const displayAlbum = showAlbum && !isMobile;
 
   return (
     <TableContainer>
@@ -61,10 +68,10 @@ export default function TrackList({
         {showHeader && (
           <TableHead>
             <TableRow sx={{ '&:hover': { bgcolor: 'transparent' } }}>
-              <TableCell sx={{ width: 40 }}>#</TableCell>
+              {!isMobile && <TableCell sx={{ width: 40 }}>#</TableCell>}
               <TableCell>Title</TableCell>
-              {showAlbum && <TableCell>Album</TableCell>}
-              <TableCell align="right" sx={{ width: 80 }}>
+              {displayAlbum && <TableCell>Album</TableCell>}
+              <TableCell align="right" sx={{ width: isMobile ? 50 : 80 }}>
                 ⏱
               </TableCell>
             </TableRow>
@@ -91,26 +98,28 @@ export default function TrackList({
                   },
                 }}
               >
-                <TableCell sx={{ color: isCurrent ? 'primary.main' : 'text.disabled', textAlign: 'center' }}>
-                  {isCurrent && isPlaying ? (
-                    <MusicNoteIcon sx={{ fontSize: 16, color: 'primary.main' }} />
-                  ) : (
-                    <>
-                      <Typography component="span" className="track-number" variant="body2">
-                        {index + 1}
-                      </Typography>
-                      <PlayArrowIcon className="play-indicator" sx={{ fontSize: 16 }} />
-                    </>
-                  )}
-                </TableCell>
+                {!isMobile && (
+                  <TableCell sx={{ color: isCurrent ? 'primary.main' : 'text.disabled', textAlign: 'center' }}>
+                    {isCurrent && isPlaying ? (
+                      <MusicNoteIcon sx={{ fontSize: 16, color: 'primary.main' }} />
+                    ) : (
+                      <>
+                        <Typography component="span" className="track-number" variant="body2">
+                          {index + 1}
+                        </Typography>
+                        <PlayArrowIcon className="play-indicator" sx={{ fontSize: 16 }} />
+                      </>
+                    )}
+                  </TableCell>
+                )}
 
-                <TableCell>
-                  <Stack direction="row" alignItems="center" spacing={1.5} sx={{ minWidth: 0 }}>
+                <TableCell sx={{ px: isMobile ? 1 : 2 }}>
+                  <Stack direction="row" alignItems="center" spacing={isMobile ? 1 : 1.5} sx={{ minWidth: 0 }}>
                     <Avatar
                       variant="rounded"
                       sx={{
-                        width: 40,
-                        height: 40,
+                        width: isMobile ? 36 : 40,
+                        height: isMobile ? 36 : 40,
                         bgcolor: '#242424',
                         fontSize: 16,
                       }}
@@ -121,7 +130,10 @@ export default function TrackList({
                       <Typography
                         variant="body2"
                         noWrap
-                        sx={{ color: isCurrent ? 'primary.main' : 'text.primary' }}
+                        sx={{
+                          color: isCurrent ? 'primary.main' : 'text.primary',
+                          fontSize: isMobile ? 13 : 14,
+                        }}
                       >
                         {track.title}
                       </Typography>
@@ -134,6 +146,7 @@ export default function TrackList({
                         onClick={(e) => e.stopPropagation()}
                         sx={{
                           display: 'block',
+                          fontSize: isMobile ? 11 : 12,
                           '&:hover': {
                             color: 'text.primary',
                             textDecoration: 'underline',
@@ -146,7 +159,7 @@ export default function TrackList({
                   </Stack>
                 </TableCell>
 
-                {showAlbum && (
+                {displayAlbum && (
                   <TableCell>
                     <Typography
                       component={Link}
@@ -167,14 +180,14 @@ export default function TrackList({
                   </TableCell>
                 )}
 
-                <TableCell align="right">
+                <TableCell align="right" sx={{ px: isMobile ? 0.5 : 2 }}>
                   <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={0.5}>
                     <TrackActions
                       songId={track.id}
                       playlistId={playlistId}
                       onRemovedFromPlaylist={onRemovedFromPlaylist}
                     />
-                    <Typography variant="body2" color="text.disabled" sx={{ fontVariantNumeric: 'tabular-nums', minWidth: 36, textAlign: 'right' }}>
+                    <Typography variant="body2" color="text.disabled" sx={{ fontVariantNumeric: 'tabular-nums', minWidth: 36, textAlign: 'right', fontSize: isMobile ? 11 : 14 }}>
                       {formatDuration(track.durationSeconds)}
                     </Typography>
                   </Stack>

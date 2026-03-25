@@ -38,7 +38,7 @@ export default function Card({
       sx={{
         bgcolor: 'background.paper',
         borderRadius: 2,
-        p: 2,
+        p: { xs: 1.5, sm: 2 },
         cursor: 'pointer',
         transition: 'all 0.3s ease',
         animation: 'scaleIn 0.3s ease forwards',
@@ -58,7 +58,7 @@ export default function Card({
       }}
       elevation={0}
     >
-      <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1', mb: 2 }}>
+      <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1', mb: { xs: 1.5, sm: 2 } }}>
         <Box
           sx={{
             width: '100%',
@@ -68,7 +68,7 @@ export default function Card({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 48,
+            fontSize: { xs: 36, sm: 48 },
             boxShadow: 2,
             overflow: 'hidden',
           }}
@@ -98,10 +98,10 @@ export default function Card({
           </Fab>
         )}
       </Box>
-      <Typography variant="body2" fontWeight={700} noWrap>
+      <Typography variant="body2" fontWeight={700} noWrap sx={{ fontSize: { xs: 12, sm: 14 } }}>
         {title}
       </Typography>
-      <Typography variant="caption" color="text.disabled" noWrap sx={{ lineHeight: 1.4 }}>
+      <Typography variant="caption" color="text.disabled" noWrap sx={{ lineHeight: 1.4, fontSize: { xs: 10, sm: 12 } }}>
         {subtitle}
       </Typography>
     </MuiCard>
@@ -113,8 +113,12 @@ export function CardGrid({ children }: { children: React.ReactNode }) {
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-        gap: 3,
+        gridTemplateColumns: {
+          xs: 'repeat(auto-fill, minmax(130px, 1fr))',
+          sm: 'repeat(auto-fill, minmax(155px, 1fr))',
+          md: 'repeat(auto-fill, minmax(180px, 1fr))',
+        },
+        gap: { xs: 1.5, sm: 2, md: 3 },
       }}
     >
       {children}

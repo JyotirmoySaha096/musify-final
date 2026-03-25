@@ -10,6 +10,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -33,6 +35,8 @@ export default function TrackActions({ songId, playlistId, onRemovedFromPlaylist
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [playlistsLoaded, setPlaylistsLoaded] = useState(false);
+  const theme = useTheme();
+  const isTouchDevice = useMediaQuery(theme.breakpoints.down('md'));
 
   // Check if song is already liked on mount
   useEffect(() => {
@@ -96,6 +100,15 @@ export default function TrackActions({ songId, playlistId, onRemovedFromPlaylist
 
   if (!token) return null;
 
+  // On touch devices, always show buttons (no hover-reveal)
+  const visibilitySx = isTouchDevice
+    ? { opacity: 1 }
+    : {
+        opacity: 0,
+        '.track-row:hover &': { opacity: 1 },
+        transition: 'opacity 0.15s',
+      };
+
   return (
     <Stack direction="row" alignItems="center" onClick={(e) => e.stopPropagation()}>
       {/* Heart / like button */}
@@ -106,9 +119,8 @@ export default function TrackActions({ songId, playlistId, onRemovedFromPlaylist
           disabled={likedLoading}
           sx={{
             color: liked ? 'primary.main' : 'text.disabled',
-            opacity: 0,
-            '.track-row:hover &': { opacity: 1 },
-            '&.liked': { opacity: 1 },
+            ...visibilitySx,
+            ...(liked && !isTouchDevice ? { opacity: 1 } : {}),
             transition: 'opacity 0.15s, color 0.15s',
           }}
           className={liked ? 'liked' : ''}
@@ -124,9 +136,7 @@ export default function TrackActions({ songId, playlistId, onRemovedFromPlaylist
           onClick={openMenu}
           sx={{
             color: 'text.disabled',
-            opacity: 0,
-            '.track-row:hover &': { opacity: 1 },
-            transition: 'opacity 0.15s',
+            ...visibilitySx,
           }}
         >
           <MoreHorizIcon sx={{ fontSize: 16 }} />

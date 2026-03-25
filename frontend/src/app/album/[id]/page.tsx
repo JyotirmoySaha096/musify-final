@@ -51,8 +51,6 @@ export default function AlbumPage() {
 
   const albumSongs = album.songs || [];
 
-  // Queue-comparison: handles the edge case where the same song exists in
-  // multiple contexts (e.g. album + playlist + liked songs)
   const isThisAlbumActive =
     currentTrack && albumSongs.length > 0 &&
     albumSongs.some((s: any) => s.id === currentTrack.id) &&
@@ -62,7 +60,6 @@ export default function AlbumPage() {
 
   const handlePlayAll = () => {
     if (isThisAlbumActive) {
-      // This album's track is loaded — just toggle pause/resume
       togglePlay();
     } else if (album.songs?.length > 0) {
       playTrack(album.songs[0], album.songs, 0);
@@ -81,23 +78,25 @@ export default function AlbumPage() {
       <Box
         sx={{
           display: 'flex',
-          alignItems: 'flex-end',
-          gap: 3,
-          p: '40px 32px 24px',
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'center', sm: 'flex-end' },
+          gap: { xs: 2, sm: 3 },
+          p: { xs: '24px 16px 20px', sm: '40px 32px 24px' },
           background: 'linear-gradient(180deg, rgba(83,83,83,0.6) 0%, #121212 100%)',
-          minHeight: 280,
+          minHeight: { xs: 'auto', sm: 280 },
+          textAlign: { xs: 'center', sm: 'left' },
         }}
       >
         <Box
           sx={{
-            width: 232,
-            height: 232,
+            width: { xs: 160, sm: 200, md: 232 },
+            height: { xs: 160, sm: 200, md: 232 },
             borderRadius: 2,
             bgcolor: '#242424',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 80,
+            fontSize: { xs: 56, sm: 72, md: 80 },
             flexShrink: 0,
             boxShadow: '0 16px 48px rgba(0,0,0,0.6)',
             animation: 'scaleIn 0.4s ease',
@@ -118,6 +117,7 @@ export default function AlbumPage() {
               fontWeight: 900,
               lineHeight: 1.1,
               mb: 1.5,
+              fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' },
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               display: '-webkit-box',
@@ -127,7 +127,7 @@ export default function AlbumPage() {
           >
             {album.title}
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', color: 'text.secondary' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', color: 'text.secondary', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
             <Typography
               component={Link}
               href={`/artist/${album.artist?.id}`}
@@ -147,22 +147,22 @@ export default function AlbumPage() {
       </Box>
 
       {/* Controls */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, px: 4, py: 2.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, px: { xs: 2, sm: 4 }, py: 2.5 }}>
         <Fab
           color="primary"
           onClick={handlePlayAll}
           sx={{
-            width: 56,
-            height: 56,
+            width: { xs: 48, sm: 56 },
+            height: { xs: 48, sm: 56 },
             '&:hover': { transform: 'scale(1.06)', bgcolor: 'primary.light' },
           }}
         >
-          {isThisAlbumPlaying ? <PauseIcon sx={{ fontSize: 28 }} /> : <PlayArrowIcon sx={{ fontSize: 28 }} />}
+          {isThisAlbumPlaying ? <PauseIcon sx={{ fontSize: { xs: 24, sm: 28 } }} /> : <PlayArrowIcon sx={{ fontSize: { xs: 24, sm: 28 } }} />}
         </Fab>
       </Box>
 
       {/* Track List */}
-      <Box sx={{ px: 4, pb: 4 }}>
+      <Box sx={{ px: { xs: 1, sm: 4 }, pb: 4 }}>
         <TrackList tracks={album.songs || []} showAlbum={false} />
       </Box>
     </Box>

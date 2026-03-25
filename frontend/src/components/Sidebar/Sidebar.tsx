@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -13,6 +14,8 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
@@ -25,19 +28,34 @@ import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import { useAuth } from '@/context/AuthContext';
 import { playlistsApi } from '@/lib/api';
 
-const SIDEBAR_WIDTH = 280;
+export const SIDEBAR_WIDTH = 280;
 const PLAYER_HEIGHT = 90;
 
-export default function Sidebar() {
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+export default function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
   const { user, token, logout } = useAuth();
   const [playlists, setPlaylists] = useState<any[]>([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     if (token) {
       playlistsApi.getAll(token).then(setPlaylists).catch(() => {});
     }
   }, [token]);
+
+  // Close mobile drawer on navigation
+  useEffect(() => {
+    if (isMobile && onMobileClose) {
+      onMobileClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const handleCreatePlaylist = async () => {
     if (!token) return;
@@ -58,16 +76,14 @@ export default function Sidebar() {
       : []),
   ];
 
-  return (
+  const sidebarContent = (
     <Box
-      component="aside"
       sx={{
         width: SIDEBAR_WIDTH,
-        height: `calc(100vh - ${PLAYER_HEIGHT}px)`,
+        height: isMobile ? '100%' : `calc(100vh - ${PLAYER_HEIGHT}px)`,
         bgcolor: '#000000',
         display: 'flex',
         flexDirection: 'column',
-        flexShrink: 0,
         overflow: 'hidden',
       }}
     >
@@ -84,7 +100,7 @@ export default function Sidebar() {
           ♪
         </Avatar>
         <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: '-0.5px' }}>
-          Spotify
+          Musify
         </Typography>
       </Stack>
 
@@ -263,6 +279,34 @@ export default function Sidebar() {
           </ListItemButton>
         </Box>
       )}
+    </Box>
+  );
+
+  // Mobile: render as temporary Drawer
+  if (isMobile) {
+    return (
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={onMobileClose}
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: SIDEBAR_WIDTH,
+            bgcolor: '#000000',
+            borderRight: 'none',
+          },
+        }}
+      >
+        {sidebarContent}
+      </Drawer>
+    );
+  }
+
+  // Desktop: render as fixed aside
+  return (
+    <Box component="aside" sx={{ flexShrink: 0 }}>
+      {sidebarContent}
     </Box>
   );
 }
