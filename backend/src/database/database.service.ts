@@ -23,6 +23,12 @@ export class DatabaseService implements OnModuleInit {
       define: {
         underscored: false,
       },
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      }
     });
 
     this.models = initModels(this.sequelize);

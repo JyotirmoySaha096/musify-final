@@ -1,3 +1,5 @@
+import { config } from 'dotenv';
+config();
 import { Sequelize } from 'sequelize';
 import { seed } from './seed';
 import { initModels } from '../models';
@@ -16,6 +18,12 @@ async function run() {
       define: {
         underscored: false,
       },
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
+      }
     },
   );
 

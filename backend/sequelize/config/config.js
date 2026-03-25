@@ -12,6 +12,12 @@ module.exports = {
     password: process.env.DB_PASSWORD || 'spotify_secret',
     database: process.env.DB_NAME || 'spotify_clone',
     logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
   },
   test: {
     dialect: 'postgres',
@@ -21,6 +27,12 @@ module.exports = {
     password: process.env.DB_PASSWORD || 'spotify_secret',
     database: process.env.DB_NAME || 'spotify_clone',
     logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
   },
   production: {
     dialect: 'postgres',
@@ -30,6 +42,12 @@ module.exports = {
     password: process.env.DB_PASSWORD || 'spotify_secret',
     database: process.env.DB_NAME || 'spotify_clone',
     logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
   },
 };
 
