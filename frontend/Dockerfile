@@ -8,6 +8,7 @@ RUN npm install
 COPY . .
 
 ENV NEXT_PUBLIC_API_URL=/musify-api
+ENV NEXT_PUBLIC_BASE_PATH=/musify
 RUN npm run build
 
 EXPOSE 3000
