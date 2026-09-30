@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      - DB_HOST=musify-db-1
+      - DB_HOST=musify-final-db-1
       - DB_PORT=5432
       - DB_USERNAME=spotify
       - DB_PASSWORD=spotify_secret
