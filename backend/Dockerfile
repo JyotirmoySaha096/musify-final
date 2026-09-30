@@ -22,6 +22,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/sequelize ./sequelize
+COPY --from=builder /app/.sequelizerc ./
 
 EXPOSE 3001
 CMD ["node", "dist/main.js"]
