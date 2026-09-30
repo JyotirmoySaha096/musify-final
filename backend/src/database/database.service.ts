@@ -23,14 +23,15 @@ export class DatabaseService implements OnModuleInit {
       define: {
         underscored: false,
       },
-      ...(host !== 'localhost' && host !== '127.0.0.1' && {
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
-        },
-      }),
+      // SSL Disabled for Docker compatibility
+      // ...(host !== 'localhost' && host !== '127.0.0.1' && {
+      //   dialectOptions: {
+      //     ssl: {
+      //       require: true,
+      //       rejectUnauthorized: false,
+      //     },
+      //   },
+      // }),
     });
 
     this.models = initModels(this.sequelize);

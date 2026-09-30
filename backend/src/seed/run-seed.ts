@@ -17,14 +17,15 @@ async function run() {
       define: {
         underscored: false,
       },
-      ...((process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1') && {
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false
-          }
-        }
-      })
+      // SSL Disabled for Docker compatibility
+      // ...((process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1') && {
+      //   dialectOptions: {
+      //     ssl: {
+      //       require: true,
+      //       rejectUnauthorized: false
+      //     }
+      //   }
+      // })
     },
   );
 
