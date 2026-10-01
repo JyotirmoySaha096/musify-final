@@ -21,7 +21,7 @@ function TokenHandler() {
     const token = searchParams.get('token');
     if (token) {
       // Temporarily store token and refresh context
-      localStorage.setItem('musify_token', token);
+      localStorage.setItem('spotify_token', token);
       window.location.href = process.env.NEXT_PUBLIC_BASE_PATH || '/'; // Hard reload to clear url and trigger AuthContext
     }
   }, [searchParams]);
