@@ -34,7 +34,7 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Request() req: any) {
+  async googleAuth() {
     // Initiates the Google OAuth flow
   }
 
