@@ -23,9 +23,9 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_USERNAME=spotify
+      - DB_USER=spotify
       - DB_PASSWORD=spotify_secret
-      - DB_DATABASE=spotify_clone
+      - DB_NAME=spotify_clone
     depends_on:
       - db
     networks:
@@ -36,6 +36,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     restart: always
+    ports:
+      - "8080:3000"
     environment:
       - NEXT_PUBLIC_API_URL=/musify-api
     depends_on:
