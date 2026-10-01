@@ -18,6 +18,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: always
+    env_file:
+      - /home/jyotirmoysaha/server/musify.env
     environment:
       - DB_HOST=musify-final-db-1
       - DB_PORT=5432
