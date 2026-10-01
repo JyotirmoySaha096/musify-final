@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     env_file:
-      - ${HOME}/server/musify.env
+      - /home/jyotirmoysaha/server/musify.env
     environment:
       - DB_HOST=db
       - DB_PORT=5432

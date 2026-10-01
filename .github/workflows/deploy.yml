@@ -22,6 +22,12 @@ jobs:
         run: |
           docker compose -p musify-final up --build -d
           
+      - name: Run Database Migrations
+        run: |
+          # Wait 5 seconds to ensure DB and API are fully initialized
+          sleep 5
+          docker exec musify-final-api-1 npm run db:migrate || echo "Migration skipped or failed"
+
       - name: Clean up old Docker images
         run: |
           docker image prune -f
