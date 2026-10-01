@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Box from '@mui/material/Box';
@@ -14,14 +14,7 @@ import Divider from '@mui/material/Divider';
 import { useAuth } from '@/context/AuthContext';
 import { API_BASE } from '@/lib/api';
 
-export default function LoginPage() {
-  const router = useRouter();
-  const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
+function TokenHandler() {
   const searchParams = useSearchParams();
 
   React.useEffect(() => {
@@ -29,9 +22,20 @@ export default function LoginPage() {
     if (token) {
       // Temporarily store token and refresh context
       localStorage.setItem('musify_token', token);
-      window.location.href = '/musify'; // Hard reload to clear url and trigger AuthContext
+      window.location.href = process.env.NEXT_PUBLIC_BASE_PATH || '/'; // Hard reload to clear url and trigger AuthContext
     }
   }, [searchParams]);
+
+  return null;
+}
+
+export default function LoginPage() {
+  const router = useRouter();
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,6 +89,10 @@ export default function LoginPage() {
             Log in to Musify
           </Typography>
         </Box>
+
+        <Suspense fallback={null}>
+          <TokenHandler />
+        </Suspense>
 
         {error && (
           <Alert severity="error" sx={{ mb: 2, bgcolor: 'rgba(220,53,69,0.15)', color: '#ff6b7a' }}>
