@@ -7,6 +7,7 @@ import { PlaylistsModule } from './playlists/playlists.module';
 import { SearchModule } from './search/search.module';
 import { LikedSongsModule } from './liked-songs/liked-songs.module';
 import { DatabaseModule } from './database/database.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DatabaseModule } from './database/database.module';
     PlaylistsModule,
     SearchModule,
     LikedSongsModule,
+    AdminModule,
   ],
 })
 export class AppModule {}

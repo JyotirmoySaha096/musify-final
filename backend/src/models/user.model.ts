@@ -27,6 +27,22 @@ export function initUserModel(sequelize: Sequelize) {
         allowNull: true,
         field: 'avatarUrl',
       },
+      googleId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      microsoftId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      appleId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      facebookId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
