@@ -5,7 +5,9 @@ import {
   Body,
   UseGuards,
   Request,
+  Res,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -28,5 +30,19 @@ export class AuthController {
   @Get('me')
   getProfile(@Request() req: any) {
     return this.authService.getProfile(req.user.id);
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Request() req: any) {
+    // Initiates the Google OAuth flow
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Request() req: any, @Res() res: any) {
+    const { accessToken } = req.user;
+    // Redirect back to frontend with token
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000/musify'}/login?token=${accessToken}`);
   }
 }

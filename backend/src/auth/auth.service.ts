@@ -92,6 +92,33 @@ export class AuthService {
     };
   }
 
+  async validateOAuthLogin(user: { email: string; username: string }) {
+    let existingUser = await this.db.models.User.findOne({
+      where: { email: user.email },
+    });
+
+    if (!existingUser) {
+      existingUser = await this.db.models.User.create({
+        id: uuidv4(),
+        email: user.email,
+        username: user.username,
+        passwordHash: '', // No password for OAuth
+        avatarUrl: null,
+      });
+    }
+
+    const token = this.generateToken(existingUser as any);
+
+    return {
+      user: {
+        id: (existingUser as any).id,
+        email: (existingUser as any).email,
+        username: (existingUser as any).username,
+      },
+      accessToken: token,
+    };
+  }
+
   private generateToken(user: any): string {
     return this.jwtService.sign({
       sub: user.id,
