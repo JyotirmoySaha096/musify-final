@@ -150,30 +150,34 @@ export default function LoginPage() {
           </Button>
         </Box>
 
-        <Divider sx={{ my: 3 }}>OR</Divider>
+        {process.env.NEXT_PUBLIC_BASE_PATH === '/musify' && (
+          <>
+            <Divider sx={{ my: 3 }}>OR</Divider>
 
-        <Button
-          variant="outlined"
-          fullWidth
-          href={`${API_BASE}/auth/google`}
-          sx={{
-            py: 1.5,
-            fontSize: 15,
-            borderRadius: 100,
-            textTransform: 'none',
-            color: 'text.primary',
-            borderColor: 'rgba(255, 255, 255, 0.2)',
-            display: 'flex',
-            gap: 1.5,
-            '&:hover': {
-              borderColor: 'rgba(255, 255, 255, 0.4)',
-              bgcolor: 'rgba(255, 255, 255, 0.05)',
-            }
-          }}
-        >
-          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{ width: 20, height: 20 }} />
-          Continue with Google
-        </Button>
+            <Button
+              variant="outlined"
+              fullWidth
+              href={`${API_BASE}/auth/google`}
+              sx={{
+                py: 1.5,
+                fontSize: 15,
+                borderRadius: 100,
+                textTransform: 'none',
+                color: 'text.primary',
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                display: 'flex',
+                gap: 1.5,
+                '&:hover': {
+                  borderColor: 'rgba(255, 255, 255, 0.4)',
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
+                }
+              }}
+            >
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{ width: 20, height: 20 }} />
+              Continue with Google
+            </Button>
+          </>
+        )}
 
         <Typography variant="body2" color="text.disabled" sx={{ textAlign: 'center', mt: 3 }}>
           Don&apos;t have an account?{' '}
