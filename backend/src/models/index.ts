@@ -6,6 +6,8 @@ import { initPlaylistModel } from './playlist.model';
 import { initPlaylistSongModel } from './playlist-song.model';
 import { initSongModel } from './song.model';
 import { initUserModel } from './user.model';
+import { initRoleModel } from './role.model';
+import { initPermissionModel } from './permission.model';
 
 export function initModels(sequelize: Sequelize) {
   const User = initUserModel(sequelize);
@@ -15,6 +17,15 @@ export function initModels(sequelize: Sequelize) {
   const Playlist = initPlaylistModel(sequelize);
   const PlaylistSong = initPlaylistSongModel(sequelize);
   const LikedSong = initLikedSongModel(sequelize);
+  const Role = initRoleModel(sequelize);
+  const Permission = initPermissionModel(sequelize);
+
+  // RBAC Relationships
+  User.belongsToMany(Role, { through: 'user_roles', foreignKey: 'userId', otherKey: 'roleId', as: 'roles', timestamps: false });
+  Role.belongsToMany(User, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId', as: 'users', timestamps: false });
+
+  Role.belongsToMany(Permission, { through: 'role_permissions', foreignKey: 'roleId', otherKey: 'permissionId', as: 'permissions', timestamps: false });
+  Permission.belongsToMany(Role, { through: 'role_permissions', foreignKey: 'permissionId', otherKey: 'roleId', as: 'roles', timestamps: false });
 
   // User -> Playlists
   User.hasMany(Playlist, { foreignKey: 'userId', as: 'playlists' });
@@ -57,5 +68,7 @@ export function initModels(sequelize: Sequelize) {
     Playlist,
     PlaylistSong,
     LikedSong,
+    Role,
+    Permission,
   };
 }

@@ -51,6 +51,7 @@ export class AuthService {
   async login(dto: LoginDto) {
     const user = await this.db.models.User.findOne({
       where: { email: dto.email },
+      include: ['roles'],
     });
 
     if (!user) {
@@ -120,10 +121,11 @@ export class AuthService {
   }
 
   private generateToken(user: any): string {
+    const roles = user.roles ? user.roles.map((r: any) => r.name) : ['user'];
     return this.jwtService.sign({
       sub: user.id,
       email: user.email,
-      role: user.role,
+      roles,
     });
   }
 }

@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { sub: string; email: string }) {
+  async validate(payload: { sub: string; email: string; roles: string[] }) {
     const user = await this.db.models.User.findOne({
       where: { id: payload.sub },
     });
@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       id: (user as any).id,
       email: (user as any).email,
       username: (user as any).username,
-      role: (user as any).role,
+      roles: payload.roles,
     };
   }
 }
