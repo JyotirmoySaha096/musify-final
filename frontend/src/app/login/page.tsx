@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -10,7 +10,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
+import Divider from '@mui/material/Divider';
 import { useAuth } from '@/context/AuthContext';
+import { API_BASE } from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,6 +21,17 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const searchParams = useSearchParams();
+
+  React.useEffect(() => {
+    const token = searchParams.get('token');
+    if (token) {
+      // Temporarily store token and refresh context
+      localStorage.setItem('musify_token', token);
+      window.location.href = '/musify'; // Hard reload to clear url and trigger AuthContext
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,6 +141,31 @@ export default function LoginPage() {
             {loading ? 'Logging in...' : 'Log In'}
           </Button>
         </Box>
+
+        <Divider sx={{ my: 3 }}>OR</Divider>
+
+        <Button
+          variant="outlined"
+          fullWidth
+          href={`${API_BASE}/auth/google`}
+          sx={{
+            py: 1.5,
+            fontSize: 15,
+            borderRadius: 100,
+            textTransform: 'none',
+            color: 'text.primary',
+            borderColor: 'rgba(255, 255, 255, 0.2)',
+            display: 'flex',
+            gap: 1.5,
+            '&:hover': {
+              borderColor: 'rgba(255, 255, 255, 0.4)',
+              bgcolor: 'rgba(255, 255, 255, 0.05)',
+            }
+          }}
+        >
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{ width: 20, height: 20 }} />
+          Continue with Google
+        </Button>
 
         <Typography variant="body2" color="text.disabled" sx={{ textAlign: 'center', mt: 3 }}>
           Don&apos;t have an account?{' '}
