@@ -20,7 +20,7 @@ jobs:
 
       - name: Build and Deploy with Docker Compose
         run: |
-          docker compose -p musify-final up --build -d
+          docker compose -p musify-final up --build -d --remove-orphans
           
       - name: Run Database Migrations
         run: |
