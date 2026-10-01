@@ -43,7 +43,6 @@ export class AuthController {
   async googleAuthRedirect(@Request() req: any, @Res() res: any) {
     const { accessToken } = req.user;
     // Redirect back to frontend with token
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    res.redirect(`${frontendUrl}/musify/login?token=${accessToken}`);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000/musify'}/login?token=${accessToken}`);
   }
 }
