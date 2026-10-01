@@ -112,3 +112,11 @@ export const likedSongsApi = {
   unlike: (token: string, songId: string) =>
     request<any>(`/liked-songs/${songId}`, { method: 'DELETE' }, token),
 };
+
+// Admin
+export const adminApi = {
+  getUsers: (token: string) =>
+    request<any[]>('/admin/users', {}, token),
+  deleteUser: (id: string, token: string) =>
+    request<{ message: string }>(`/admin/users/${id}`, { method: 'DELETE' }, token),
+};
