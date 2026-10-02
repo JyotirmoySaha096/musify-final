@@ -1,0 +1,16 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "=== Running Frontend Linter ==="
+npm run lint --prefix frontend || {
+    echo "Frontend linting failed. Please fix the errors."
+    exit 1
+}
+
+echo "=== Running Backend Linter ==="
+npm run lint --prefix backend || {
+    echo "Backend linting failed. Please fix the errors."
+    exit 1
+}
+
+echo "Linting passed!"

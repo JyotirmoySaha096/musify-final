@@ -13,21 +13,32 @@ export class AdminController {
   @Get('users')
   async getAllUsers() {
     const users = await this.db.models.User.findAll({
-      attributes: ['id', 'email', 'username', 'googleId', 'microsoftId', 'appleId', 'facebookId', 'createdAt'],
-      include: [{
-        model: this.db.models.Role,
-        as: 'roles',
-        attributes: ['name'],
-        through: { attributes: [] }
-      }]
+      attributes: [
+        'id',
+        'email',
+        'username',
+        'googleId',
+        'microsoftId',
+        'appleId',
+        'facebookId',
+        'createdAt',
+      ],
+      include: [
+        {
+          model: this.db.models.Role,
+          as: 'roles',
+          attributes: ['name'],
+          through: { attributes: [] },
+        },
+      ],
     });
-    
+
     // Map the output to match the frontend expectations (roles string array)
-    return users.map(u => {
+    return users.map((u) => {
       const user = u.get({ plain: true });
       return {
         ...user,
-        roles: user.roles?.map((r: any) => r.name) || ['user']
+        roles: user.roles?.map((r: any) => r.name) || ['user'],
       };
     });
   }

@@ -7,17 +7,17 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const requiredRoles = this.reflector.getAllAndOverride<string[]>(
+      ROLES_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
     if (!requiredRoles) {
       return true; // No roles required for this endpoint
     }
 
     const { user } = context.switchToHttp().getRequest();
-    
+
     // The JwtStrategy needs to attach the roles to the request user payload
     if (!user || !user.roles || !Array.isArray(user.roles)) {
       return false;
