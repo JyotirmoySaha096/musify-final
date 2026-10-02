@@ -25,6 +25,10 @@ import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PersonIcon from '@mui/icons-material/Person';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { useAuth } from '@/context/AuthContext';
 import { playlistsApi } from '@/lib/api';
 
@@ -39,6 +43,15 @@ interface SidebarProps {
 export default function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
   const { user, token, logout } = useAuth();
+  
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
   const [playlists, setPlaylists] = useState<any[]>([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -234,7 +247,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }: SidebarPr
               direction="row"
               alignItems="center"
               spacing={1.25}
-              onClick={logout}
+              onClick={handleMenuClick}
               sx={{
                 cursor: 'pointer',
                 color: 'text.secondary',
@@ -255,8 +268,47 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }: SidebarPr
               <Typography variant="body2" fontWeight={600}>
                 {user.username}
               </Typography>
-              <LogoutIcon fontSize="small" sx={{ ml: 'auto' }} />
             </Stack>
+            
+            <Menu
+              anchorEl={anchorEl}
+              open={openMenu}
+              onClose={handleMenuClose}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+              transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              PaperProps={{
+                sx: {
+                  bgcolor: '#282828',
+                  color: 'text.primary',
+                  minWidth: 200,
+                  mt: -1,
+                  '& .MuiMenuItem-root': {
+                    py: 1.5,
+                    fontSize: 14,
+                    fontWeight: 500,
+                  },
+                }
+              }}
+            >
+              <MenuItem component={Link} href="/profile" onClick={handleMenuClose}>
+                <ListItemIcon><PersonIcon fontSize="small" sx={{ color: 'text.secondary' }} /></ListItemIcon>
+                Profile
+              </MenuItem>
+              
+              {user.roles?.includes('admin') && (
+                <MenuItem component={Link} href="/admin/settings" onClick={handleMenuClose}>
+                  <ListItemIcon><SettingsIcon fontSize="small" sx={{ color: 'text.secondary' }} /></ListItemIcon>
+                  Admin Settings
+                </MenuItem>
+              )}
+              
+              <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.1)' }} />
+              
+              <MenuItem onClick={() => { handleMenuClose(); logout(); }}>
+                <ListItemIcon><LogoutIcon fontSize="small" sx={{ color: 'text.secondary' }} /></ListItemIcon>
+                Log out
+              </MenuItem>
+            </Menu>
           </Box>
         </>
       ) : (

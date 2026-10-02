@@ -1,8 +1,9 @@
-import { Controller, Get, Delete, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Delete, Put, Post, Body, Param, UseGuards, NotFoundException, BadRequestException } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { DatabaseService } from '../database/database.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -47,5 +48,56 @@ export class AdminController {
   async deleteUser(@Param('id') id: string) {
     await this.db.models.User.destroy({ where: { id } });
     return { success: true, message: 'User deleted' };
+  }
+
+  @Put('users/:id/roles')
+  async updateUserRoles(@Param('id') id: string, @Body('roles') roleNames: string[]) {
+    const user = await this.db.models.User.findByPk(id);
+    if (!user) throw new NotFoundException('User not found');
+    
+    // Find role records
+    const roles = await this.db.models.Role.findAll({
+      where: { name: roleNames }
+    });
+    
+    // Set roles via junction table
+    await (user as any).setRoles(roles);
+    
+    return { success: true, message: 'Roles updated' };
+  }
+
+  @Get('roles')
+  async getRoles() {
+    return this.db.models.Role.findAll();
+  }
+
+  @Post('songs')
+  async createSong(@Body() body: any) {
+    if (!body.title || !body.artistId) {
+      throw new BadRequestException('Title and artistId are required');
+    }
+    const song = await this.db.models.Song.create({
+      id: uuidv4(),
+      ...body
+    });
+    return song;
+  }
+
+  @Put('songs/:id')
+  async updateSong(@Param('id') id: string, @Body() body: any) {
+    const song = await this.db.models.Song.findByPk(id);
+    if (!song) throw new NotFoundException('Song not found');
+    
+    await song.update(body);
+    return song;
+  }
+
+  @Delete('songs/:id')
+  async deleteSong(@Param('id') id: string) {
+    const song = await this.db.models.Song.findByPk(id);
+    if (!song) throw new NotFoundException('Song not found');
+    
+    await song.destroy();
+    return { success: true, message: 'Song deleted' };
   }
 }

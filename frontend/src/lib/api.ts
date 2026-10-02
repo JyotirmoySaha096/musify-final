@@ -119,4 +119,14 @@ export const adminApi = {
     request<any[]>('/admin/users', {}, token),
   deleteUser: (id: string, token: string) =>
     request<{ message: string }>(`/admin/users/${id}`, { method: 'DELETE' }, token),
+  updateUserRoles: (id: string, roles: string[], token: string) =>
+    request<any>(`/admin/users/${id}/roles`, { method: 'PUT', body: JSON.stringify({ roles }) }, token),
+  getRoles: (token: string) =>
+    request<any[]>('/admin/roles', {}, token),
+  createSong: (data: any, token: string) =>
+    request<any>('/admin/songs', { method: 'POST', body: JSON.stringify(data) }, token),
+  updateSong: (id: string, data: any, token: string) =>
+    request<any>(`/admin/songs/${id}`, { method: 'PUT', body: JSON.stringify(data) }, token),
+  deleteSong: (id: string, token: string) =>
+    request<{ message: string }>(`/admin/songs/${id}`, { method: 'DELETE' }, token),
 };
