@@ -79,10 +79,22 @@ export class AuthService {
   }
 
   async getProfile(userId: string) {
-    const user = await this.db.models.User.findOne({ where: { id: userId } });
+    const user = await this.db.models.User.findOne({
+      where: { id: userId },
+      include: [
+        {
+          model: this.db.models.Role,
+          as: 'roles',
+          attributes: ['name'],
+          through: { attributes: [] },
+        },
+      ],
+    });
     if (!user) {
       throw new UnauthorizedException();
     }
+
+    const roles = (user as any).roles?.map((r: any) => r.name) || ['user'];
 
     return {
       id: (user as any).id,
@@ -90,12 +102,21 @@ export class AuthService {
       username: (user as any).username,
       avatarUrl: (user as any).avatarUrl,
       createdAt: (user as any).createdAt,
+      roles,
     };
   }
 
   async validateOAuthLogin(user: { email: string; username: string }) {
     let existingUser = await this.db.models.User.findOne({
       where: { email: user.email },
+      include: [
+        {
+          model: this.db.models.Role,
+          as: 'roles',
+          attributes: ['name'],
+          through: { attributes: [] },
+        },
+      ],
     });
 
     if (!existingUser) {
@@ -105,6 +126,18 @@ export class AuthService {
         username: user.username,
         passwordHash: '', // No password for OAuth
         avatarUrl: null,
+      });
+      // Re-fetch with roles association
+      existingUser = await this.db.models.User.findOne({
+        where: { id: (existingUser as any).id },
+        include: [
+          {
+            model: this.db.models.Role,
+            as: 'roles',
+            attributes: ['name'],
+            through: { attributes: [] },
+          },
+        ],
       });
     }
 
