@@ -10,7 +10,7 @@ import { GoogleStrategy } from './google.strategy';
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'spotify-clone-secret-key',
+      secret: process.env.JWT_SECRET || 'musify-secret-key',
       signOptions: { expiresIn: '7d' },
     }),
   ],

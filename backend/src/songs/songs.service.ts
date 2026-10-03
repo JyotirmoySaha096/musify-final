@@ -92,7 +92,7 @@ export class SongsService {
     let payload: StreamTokenPayload;
     try {
       payload = this.jwtService.verify<StreamTokenPayload>(token, {
-        secret: process.env.JWT_SECRET || 'spotify-clone-secret-key',
+        secret: process.env.JWT_SECRET || 'musify-secret-key',
       });
     } catch {
       throw new UnauthorizedException('Invalid or expired stream token');
