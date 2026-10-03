@@ -4,6 +4,7 @@ import { DatabaseService } from '../database/database.service';
 @Injectable()
 export class AlbumsService {
   constructor(private db: DatabaseService) {}
+
   getAllowedVisibilities(user: any): string[] {
     const roles = user?.roles || [];
     if (roles.includes('admin') || roles.includes('exclusive')) {
@@ -42,19 +43,10 @@ export class AlbumsService {
         { model: Artist, as: 'artist' },
         {
           model: Song,
+          as: 'songs',
           where: { visibility: this.getAllowedVisibilities(user) },
           required: false,
-          as: 'songs',
-          include: [
-            { model: Artist, as: 'artist' },
-            {
-              model: Song,
-              as: 'songs',
-              attributes: [],
-              where: { visibility: this.getAllowedVisibilities(user) },
-              required: true,
-            },
-          ],
+          include: [{ model: Artist, as: 'artist' }],
         },
       ],
     });
