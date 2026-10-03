@@ -8,6 +8,8 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import BlockIcon from '@mui/icons-material/Block';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 export function UsersTab({ token, currentUserId }: { token: string, currentUserId: string }) {
   const [users, setUsers] = useState<any[]>([]);
@@ -34,6 +36,18 @@ export function UsersTab({ token, currentUserId }: { token: string, currentUserI
     } catch (err: any) {
       setError(err.message || 'Failed to fetch data');
     } finally {
+      setLoading(false);
+    }
+  };
+
+  
+  const handleToggleStatus = async (user: any) => {
+    try {
+      setLoading(true);
+      await adminApi.updateUserStatus(user.id, user.isActive === false ? true : false, token);
+      await fetchData();
+    } catch (err: any) {
+      setError(err.message || 'Failed to update user status');
       setLoading(false);
     }
   };
@@ -78,6 +92,7 @@ export function UsersTab({ token, currentUserId }: { token: string, currentUserI
             <TableRow>
               <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Roles</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
@@ -87,6 +102,9 @@ export function UsersTab({ token, currentUserId }: { token: string, currentUserI
               <TableRow key={user.id}>
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  <Chip label={user.isActive !== false ? 'Active' : 'Disabled'} color={user.isActive !== false ? 'success' : 'error'} size="small" />
+                </TableCell>
                 <TableCell>
                   {user.roles?.map((role: string) => (
                     <Chip 
@@ -99,7 +117,17 @@ export function UsersTab({ token, currentUserId }: { token: string, currentUserI
                   ))}
                 </TableCell>
                 <TableCell align="right">
+                  
                   <Button
+                    size="small"
+                    startIcon={user.isActive !== false ? <BlockIcon /> : <CheckCircleIcon />}
+                    color={user.isActive !== false ? "warning" : "success"}
+                    onClick={() => handleToggleStatus(user)}
+                    disabled={user.id === currentUserId}
+                  >
+                    {user.isActive !== false ? 'Disable' : 'Enable'}
+                  </Button>
+<Button
                     size="small"
                     startIcon={<EditIcon />}
                     onClick={() => handleOpenEdit(user)}

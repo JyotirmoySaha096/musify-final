@@ -75,6 +75,7 @@ export class AdminController {
         'microsoftId',
         'appleId',
         'facebookId',
+        'isActive',
         'createdAt',
       ],
       include: [
@@ -101,6 +102,21 @@ export class AdminController {
   async deleteUser(@Param('id') id: string) {
     await this.db.models.User.destroy({ where: { id } });
     return { success: true, message: 'User deleted' };
+  }
+
+  @Put('users/:id/status')
+  async updateUserStatus(
+    @Param('id') id: string,
+    @Body('isActive') isActive: boolean,
+  ) {
+    const user = await this.db.models.User.findByPk(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    await user.update({ isActive });
+    return {
+      success: true,
+      message: isActive ? 'User enabled' : 'User disabled',
+    };
   }
 
   @Put('users/:id/roles')

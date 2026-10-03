@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from './AuthContext';
 import React, {
   createContext,
   useContext,
@@ -244,6 +245,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       audio.removeEventListener('ended', onEnded);
     };
   }, [state.repeat]);
+
+  
+  const { user } = useAuth();
+  
+  useEffect(() => {
+    if (!user) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+      }
+      dispatch({ type: 'PAUSE' });
+    }
+  }, [user]);
 
   return (
     <PlayerContext.Provider
