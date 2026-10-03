@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: musify
       POSTGRES_PASSWORD: musify_secret
-      POSTGRES_DB: spotify_clone
+      POSTGRES_DB: musify-db
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -25,7 +25,7 @@ services:
       - DB_PORT=5432
       - DB_USERNAME=musify
       - DB_PASSWORD=musify_secret
-      - DB_DATABASE=spotify_clone
+      - DB_DATABASE=musify-db
     depends_on:
       - db
     networks:
