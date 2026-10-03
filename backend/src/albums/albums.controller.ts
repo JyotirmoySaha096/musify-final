@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AlbumsService } from './albums.service';
 
@@ -9,7 +16,7 @@ export class AlbumsController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Request() req: any, @Query('limit') limit?: string) {
-    return this.albumsService.findAll(limit ? parseInt(limit) : undefined);
+    return this.albumsService.findAll(req.user, limit ? parseInt(limit) : undefined);
   }
 
   @UseGuards(JwtAuthGuard)

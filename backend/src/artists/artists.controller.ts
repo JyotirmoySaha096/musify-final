@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ArtistsService } from './artists.service';
 
@@ -9,7 +16,7 @@ export class ArtistsController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Request() req: any, @Query('limit') limit?: string) {
-    return this.artistsService.findAll(limit ? parseInt(limit) : undefined);
+    return this.artistsService.findAll(req.user, limit ? parseInt(limit) : undefined);
   }
 
   @UseGuards(JwtAuthGuard)

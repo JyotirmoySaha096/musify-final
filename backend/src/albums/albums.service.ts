@@ -15,11 +15,19 @@ export class AlbumsService {
     return ['public'];
   }
 
-
-  async findAll(limit?: number) {
-    const { Album, Artist } = this.db.models as any;
+  async findAll(user: any, limit?: number) {
+    const { Album, Artist, Song } = this.db.models as any;
     return Album.findAll({
-      include: [{ model: Artist, as: 'artist' }],
+      include: [
+        { model: Artist, as: 'artist' },
+        { 
+          model: Song, 
+          as: 'songs', 
+          attributes: [],
+          where: { visibility: this.getAllowedVisibilities(user) }, 
+          required: true 
+        }
+      ],
       order: [['title', 'ASC']],
       limit: limit ?? undefined,
     });
@@ -37,7 +45,16 @@ export class AlbumsService {
           where: { visibility: this.getAllowedVisibilities(user) },
           required: false,
           as: 'songs',
-          include: [{ model: Artist, as: 'artist' }],
+          include: [
+        { model: Artist, as: 'artist' },
+        { 
+          model: Song, 
+          as: 'songs', 
+          attributes: [],
+          where: { visibility: this.getAllowedVisibilities(user) }, 
+          required: true 
+        }
+      ],
         },
       ],
     });
