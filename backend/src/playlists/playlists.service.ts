@@ -11,6 +11,17 @@ import { DatabaseService } from '../database/database.service';
 @Injectable()
 export class PlaylistsService {
   constructor(private db: DatabaseService) {}
+  getAllowedVisibilities(user: any): string[] {
+    const roles = user?.roles || [];
+    if (roles.includes('admin') || roles.includes('exclusive')) {
+      return ['public', 'member', 'exclusive'];
+    }
+    if (roles.includes('member')) {
+      return ['public', 'member'];
+    }
+    return ['public'];
+  }
+
 
   async create(userId: string, dto: CreatePlaylistDto) {
     const { Playlist } = this.db.models as any;
@@ -30,7 +41,7 @@ export class PlaylistsService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, user?: any) {
     const { Playlist, PlaylistSong, User, Song, Artist, Album } = this.db
       .models as any;
     const playlist = await Playlist.findOne({
@@ -44,6 +55,7 @@ export class PlaylistsService {
             {
               model: Song,
               as: 'song',
+              where: { visibility: this.getAllowedVisibilities(user) },
               include: [
                 { model: Artist, as: 'artist' },
                 { model: Album, as: 'album' },
@@ -65,13 +77,13 @@ export class PlaylistsService {
     return playlist;
   }
 
-  async addSong(playlistId: string, songId: string, userId: string) {
+  async addSong(playlistId: string, songId: string, user: any) {
     const { Playlist, PlaylistSong } = this.db.models as any;
     const playlist = await Playlist.findOne({ where: { id: playlistId } });
     if (!playlist) {
       throw new NotFoundException('Playlist not found');
     }
-    if (playlist.userId !== userId) {
+    if (playlist.userId !== user.id) {
       throw new ForbiddenException('Not your playlist');
     }
 
@@ -88,21 +100,21 @@ export class PlaylistsService {
       songId,
       position,
     });
-    return this.findOne(playlistId);
+    return this.findOne(playlistId, user);
   }
 
-  async removeSong(playlistId: string, songId: string, userId: string) {
+  async removeSong(playlistId: string, songId: string, user: any) {
     const { Playlist, PlaylistSong } = this.db.models as any;
     const playlist = await Playlist.findOne({ where: { id: playlistId } });
     if (!playlist) {
       throw new NotFoundException('Playlist not found');
     }
-    if (playlist.userId !== userId) {
+    if (playlist.userId !== user.id) {
       throw new ForbiddenException('Not your playlist');
     }
 
     await PlaylistSong.destroy({ where: { playlistId, songId } });
-    return this.findOne(playlistId);
+    return this.findOne(playlistId, user);
   }
 
   async remove(playlistId: string, userId: string) {

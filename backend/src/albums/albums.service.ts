@@ -4,6 +4,17 @@ import { DatabaseService } from '../database/database.service';
 @Injectable()
 export class AlbumsService {
   constructor(private db: DatabaseService) {}
+  getAllowedVisibilities(user: any): string[] {
+    const roles = user?.roles || [];
+    if (roles.includes('admin') || roles.includes('exclusive')) {
+      return ['public', 'member', 'exclusive'];
+    }
+    if (roles.includes('member')) {
+      return ['public', 'member'];
+    }
+    return ['public'];
+  }
+
 
   async findAll(limit?: number) {
     const { Album, Artist } = this.db.models as any;
@@ -14,7 +25,7 @@ export class AlbumsService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, user?: any) {
     const { Album, Artist, Song } = this.db.models as any;
 
     const album = await Album.findOne({
@@ -23,6 +34,8 @@ export class AlbumsService {
         { model: Artist, as: 'artist' },
         {
           model: Song,
+          where: { visibility: this.getAllowedVisibilities(user) },
+          required: false,
           as: 'songs',
           include: [{ model: Artist, as: 'artist' }],
         },

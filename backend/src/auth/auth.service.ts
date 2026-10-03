@@ -140,7 +140,7 @@ export class AuthService {
         ],
       });
       if (existingUser && provider && providerId) {
-        await (existingUser as any).update({ [`${provider}Id`]: providerId });
+        await existingUser.update({ [`${provider}Id`]: providerId });
       }
     }
 
@@ -158,7 +158,7 @@ export class AuthService {
       existingUser = await this.db.models.User.create(data);
       // Re-fetch with roles association
       existingUser = await this.db.models.User.findOne({
-        where: { id: (existingUser as any).id },
+        where: { id: existingUser.id },
         include: [
           {
             model: this.db.models.Role,
@@ -170,13 +170,13 @@ export class AuthService {
       });
     }
 
-    const token = this.generateToken(existingUser as any);
+    const token = this.generateToken(existingUser);
 
     return {
       user: {
-        id: (existingUser as any).id,
-        email: (existingUser as any).email,
-        username: (existingUser as any).username,
+        id: existingUser.id,
+        email: existingUser.email,
+        username: existingUser.username,
       },
       accessToken: token,
     };
