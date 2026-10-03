@@ -54,7 +54,8 @@ export class DatabaseService implements OnModuleInit {
         where: { name: 'user' },
         defaults: { description: 'Standard user' },
       });
-    } catch (e) { console.error(e);
+    } catch (e) {
+      console.error(e);
       console.warn('Failed to auto-seed roles (tables might not be ready yet)');
     }
   }
