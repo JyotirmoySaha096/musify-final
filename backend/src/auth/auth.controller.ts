@@ -44,6 +44,6 @@ export class AuthController {
     const { accessToken } = req.user;
     // Redirect back to frontend with token
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
-    res.redirect(`${frontendUrl}/musify/login?token=${accessToken}`);
+    res.redirect(`${frontendUrl}/login?token=${accessToken}`);
   }
 }
