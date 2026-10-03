@@ -117,6 +117,8 @@ export const adminApi = {
     request<any[]>('/admin/users', {}, token),
   deleteUser: (id: string, token: string) =>
     request<{ message: string }>(`/admin/users/${id}`, { method: 'DELETE' }, token),
+  updateUserStatus: (id: string, isActive: boolean, token: string) =>
+    request<any>(`/admin/users/${id}/status`, { method: 'PUT', body: JSON.stringify({ isActive }) }, token),
   updateUserRoles: (id: string, roles: string[], token: string) =>
     request<any>(`/admin/users/${id}/roles`, { method: 'PUT', body: JSON.stringify({ roles }) }, token),
   getRoles: (token: string) =>

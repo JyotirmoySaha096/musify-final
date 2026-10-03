@@ -19,6 +19,13 @@ import { PlayerProvider } from '@/context/PlayerContext';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import PlayerBar from '@/components/PlayerBar/PlayerBar';
 
+
+function ConditionalPlayerBar() {
+  const { user } = useAuth();
+  if (!user) return null;
+  return <ConditionalPlayerBar />;
+}
+
 function GlobalAuthGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
