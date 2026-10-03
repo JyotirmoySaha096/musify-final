@@ -1,7 +1,8 @@
 const dotenv = require('dotenv');
+const path = require('path');
 
 // Load environment variables from `.env` if present.
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 module.exports = {
   development: {
