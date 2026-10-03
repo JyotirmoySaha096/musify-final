@@ -103,6 +103,12 @@ export class AuthService {
       avatarUrl: (user as any).avatarUrl,
       createdAt: (user as any).createdAt,
       roles,
+      linkedAccounts: {
+        google: !!(user as any).googleId,
+        microsoft: !!(user as any).microsoftId,
+        facebook: !!(user as any).facebookId,
+        apple: !!(user as any).appleId,
+      },
     };
   }
 
