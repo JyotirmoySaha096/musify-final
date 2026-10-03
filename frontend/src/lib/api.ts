@@ -17,7 +17,7 @@ async function request<T>(
 ): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
-    headers: (() => { const h = { ...getHeaders(token), ...(options.headers || {}) }; if (options.body instanceof FormData) delete h['Content-Type']; return h; })(),
+    headers: (() => { const h = { ...getHeaders(token), ...(options.headers || {}) }; if (options.body instanceof FormData) delete (h as any)['Content-Type']; return h; })(),
   });
 
   if (!res.ok) {
