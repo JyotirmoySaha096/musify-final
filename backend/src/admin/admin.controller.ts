@@ -1,4 +1,15 @@
-import { Controller, Get, Delete, Put, Post, Body, Param, UseGuards, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Delete,
+  Put,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -51,18 +62,21 @@ export class AdminController {
   }
 
   @Put('users/:id/roles')
-  async updateUserRoles(@Param('id') id: string, @Body('roles') roleNames: string[]) {
+  async updateUserRoles(
+    @Param('id') id: string,
+    @Body('roles') roleNames: string[],
+  ) {
     const user = await this.db.models.User.findByPk(id);
     if (!user) throw new NotFoundException('User not found');
-    
+
     // Find role records
     const roles = await this.db.models.Role.findAll({
-      where: { name: roleNames }
+      where: { name: roleNames },
     });
-    
+
     // Set roles via junction table
     await (user as any).setRoles(roles);
-    
+
     return { success: true, message: 'Roles updated' };
   }
 
@@ -78,7 +92,7 @@ export class AdminController {
     }
     const song = await this.db.models.Song.create({
       id: uuidv4(),
-      ...body
+      ...body,
     });
     return song;
   }
@@ -87,7 +101,7 @@ export class AdminController {
   async updateSong(@Param('id') id: string, @Body() body: any) {
     const song = await this.db.models.Song.findByPk(id);
     if (!song) throw new NotFoundException('Song not found');
-    
+
     await song.update(body);
     return song;
   }
@@ -96,7 +110,7 @@ export class AdminController {
   async deleteSong(@Param('id') id: string) {
     const song = await this.db.models.Song.findByPk(id);
     if (!song) throw new NotFoundException('Song not found');
-    
+
     await song.destroy();
     return { success: true, message: 'Song deleted' };
   }
