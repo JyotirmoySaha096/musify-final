@@ -5,6 +5,7 @@ import {
   Query,
   Headers,
   Res,
+  Req,
   UseGuards,
   Request,
 } from '@nestjs/common';
@@ -35,22 +36,25 @@ export class SongsController {
   getStreamToken(@Param('id') id: string, @Request() req: any) {
     // req.user is populated by JwtAuthGuard from the bearer token
     void req.user; // ensure guard ran
-    return this.songsService.generateStreamToken(id);
+    const clientIp = req.headers['x-real-ip'] || req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    return this.songsService.generateStreamToken(id, clientIp);
   }
 
   /**
    * Stream the audio for a song.
-   * Authentication is performed via the short-lived `token` query param
-   * (signed by the server, expires in 12h, tied to this specific songId).
-   * No long-term credentials are embedded in the URL.
+   * Authentication is performed via a short-lived `token` query param
+   * (signed by the server, expires in 30m, tied to songId + requester IP).
+   * Copying the URL to another device/network will fail.
    */
   @Get(':id/stream')
   async streamAudio(
     @Param('id') id: string,
     @Query('token') token: string,
     @Headers('range') range: string | undefined,
+    @Req() req: any,
     @Res() res: Response,
   ) {
-    return this.songsService.streamAudio(id, token, range, res);
+    const clientIp = req.headers['x-real-ip'] || req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    return this.songsService.streamAudio(id, token, range, clientIp, res);
   }
 }
