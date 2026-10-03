@@ -150,9 +150,7 @@ export default function LoginPage() {
           </Button>
         </Box>
 
-        {process.env.NEXT_PUBLIC_BASE_PATH === '/musify' && (
-          <>
-            <Divider sx={{ my: 3 }}>OR</Divider>
+        <Divider sx={{ my: 3 }}>OR</Divider>
 
             <Button
               variant="outlined"
@@ -176,8 +174,7 @@ export default function LoginPage() {
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{ width: 20, height: 20 }} />
               Continue with Google
             </Button>
-          </>
-        )}
+          
 
         <Typography variant="body2" color="text.disabled" sx={{ textAlign: 'center', mt: 3 }}>
           Don&apos;t have an account?{' '}

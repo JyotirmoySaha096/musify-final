@@ -41,3 +41,6 @@ coverage/
 .vercel
 
 docker-compose.local.yml
+
+# Uploaded Media
+backend/media/

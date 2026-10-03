@@ -5,9 +5,9 @@ services:
     image: postgres:16-alpine
     restart: always
     environment:
-      POSTGRES_USER: spotify
-      POSTGRES_PASSWORD: spotify_secret
-      POSTGRES_DB: spotify_clone
+      POSTGRES_USER: musify
+      POSTGRES_PASSWORD: musify_secret
+      POSTGRES_DB: musify-db
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -23,13 +23,15 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_USERNAME=spotify
-      - DB_PASSWORD=spotify_secret
-      - DB_DATABASE=spotify_clone
+      - DB_USERNAME=musify
+      - DB_PASSWORD=musify_secret
+      - DB_DATABASE=musify-db
     depends_on:
       - db
     networks:
       - gateway-net
+    volumes:
+      - /home/jyotirmoysaha/Music/musify_data:/app/media
 
   web:
     build:
