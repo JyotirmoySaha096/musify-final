@@ -31,7 +31,7 @@ services:
     networks:
       - gateway-net
     volumes:
-      - /home/jyotirmoysaha/musify_media:/app/media
+      - /home/jyotirmoysaha/Music/musify_data:/app/media
 
   web:
     build:
