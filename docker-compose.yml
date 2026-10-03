@@ -30,6 +30,8 @@ services:
       - db
     networks:
       - gateway-net
+    volumes:
+      - /home/jyotirmoysaha/musify_media:/usr/src/app/media
 
   web:
     build:
