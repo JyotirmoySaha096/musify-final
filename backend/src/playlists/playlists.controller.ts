@@ -28,9 +28,10 @@ export class PlaylistsController {
     return this.playlistsService.findByUser(req.user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.playlistsService.findOne(id);
+  findOne(@Param('id') id: string, @Request() req: any) {
+    return this.playlistsService.findOne(id, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -40,7 +41,7 @@ export class PlaylistsController {
     @Request() req: any,
     @Body() dto: AddSongToPlaylistDto,
   ) {
-    return this.playlistsService.addSong(id, dto.songId, req.user.id);
+    return this.playlistsService.addSong(id, dto.songId, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -50,7 +51,7 @@ export class PlaylistsController {
     @Param('songId') songId: string,
     @Request() req: any,
   ) {
-    return this.playlistsService.removeSong(id, songId, req.user.id);
+    return this.playlistsService.removeSong(id, songId, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
