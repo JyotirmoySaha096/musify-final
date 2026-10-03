@@ -21,7 +21,7 @@ export function SongsTab({ token }: { token: string }) {
   const [editingSong, setEditingSong] = useState<any>(null);
   
   // Form State
-  const [formData, setFormData] = useState({ title: '', artistId: '', albumId: '', audioUrl: '', imageUrl: '', duration: 0 });
+  const [formData, setFormData] = useState({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0 });
   const [audioFile, setAudioFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -44,15 +44,15 @@ export function SongsTab({ token }: { token: string }) {
       setEditingSong(song);
       setFormData({
         title: song.title,
-        artistId: song.artistId,
-        albumId: song.albumId || '',
+        artistName: song.artistName,
+        albumName: song.albumName || '',
         audioUrl: song.audioUrl,
         imageUrl: song.imageUrl,
         duration: song.duration
       });
     } else {
       setEditingSong(null);
-      setFormData({ title: '', artistId: '', albumId: '', audioUrl: '', imageUrl: '', duration: 0 });
+      setFormData({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0 });
       setAudioFile(null);
     }
     setOpenDialog(true);
@@ -62,11 +62,11 @@ export function SongsTab({ token }: { token: string }) {
     try {
       const data = new FormData();
       data.append('title', formData.title);
-      data.append('artistId', formData.artistId);
-      if (formData.albumId) data.append('albumId', formData.albumId);
+      data.append('artistName', formData.artistName);
+      if (formData.albumName) data.append('albumName', formData.albumName);
       if (formData.audioUrl) data.append('audioUrl', formData.audioUrl);
       if (formData.imageUrl) data.append('imageUrl', formData.imageUrl);
-      if (formData.duration) data.append('durationSeconds', formData.duration.toString());
+      
       if (audioFile) data.append('file', audioFile);
 
       if (editingSong) {
@@ -137,7 +137,7 @@ export function SongsTab({ token }: { token: string }) {
             {filteredSongs.map(song => (
               <TableRow key={song.id}>
                 <TableCell>{song.title}</TableCell>
-                <TableCell>{song.artist?.name || song.artistId}</TableCell>
+                <TableCell>{song.artist?.name || song.artistName}</TableCell>
                 <TableCell>{song.album?.title || '-'}</TableCell>
                 <TableCell align="right">
                   <Button size="small" startIcon={<EditIcon />} onClick={() => handleOpenDialog(song)}>
@@ -170,17 +170,17 @@ export function SongsTab({ token }: { token: string }) {
               onChange={e => setFormData({ ...formData, title: e.target.value })} 
             />
             <TextField 
-              label="Artist ID" 
+              label="Artist Name" 
               fullWidth 
-              value={formData.artistId} 
-              onChange={e => setFormData({ ...formData, artistId: e.target.value })} 
-              helperText="Must be a valid artist UUID"
+              value={formData.artistName} 
+              onChange={e => setFormData({ ...formData, artistName: e.target.value })} 
+              helperText="We will find or create this artist"
             />
             <TextField 
-              label="Album ID (Optional)" 
+              label="Album Name" 
               fullWidth 
-              value={formData.albumId} 
-              onChange={e => setFormData({ ...formData, albumId: e.target.value })} 
+              value={formData.albumName} 
+              onChange={e => setFormData({ ...formData, albumName: e.target.value })} 
             />
             <TextField label="Audio URL" fullWidth value={formData.audioUrl} onChange={e => setFormData({ ...formData, audioUrl: e.target.value })} helperText="Provide an external URL, or upload a file below" />
             <Box mt={2}>
@@ -198,13 +198,7 @@ export function SongsTab({ token }: { token: string }) {
               value={formData.imageUrl} 
               onChange={e => setFormData({ ...formData, imageUrl: e.target.value })} 
             />
-            <TextField 
-              label="Duration (seconds)" 
-              type="number"
-              fullWidth 
-              value={formData.duration} 
-              onChange={e => setFormData({ ...formData, duration: parseInt(e.target.value) || 0 })} 
-            />
+            
           </Box>
         </DialogContent>
         <DialogActions>

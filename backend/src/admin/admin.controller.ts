@@ -20,6 +20,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { DatabaseService } from '../database/database.service';
 import { v4 as uuidv4 } from 'uuid';
+import * as mm from 'music-metadata';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -110,13 +111,21 @@ export class AdminController {
     }),
   )
   async createSong(@Body() body: any, @UploadedFile() file?: any) {
-    if (!body.title || !body.artistId) {
-      throw new BadRequestException('Title and artistId are required');
+    if (!body.title || !body.artistName) {
+      throw new BadRequestException('Title and artistName are required');
     }
 
     let audioUrl = body.audioUrl;
+    let durationSeconds = parseInt(body.durationSeconds) || 0;
+
     if (file) {
       audioUrl = file.filename;
+      try {
+        const metadata = await mm.parseFile('./media/' + file.filename);
+        durationSeconds = Math.round(metadata.format.duration || 0);
+      } catch (err) {
+        console.error('Failed to parse metadata', err);
+      }
     }
 
     if (!audioUrl) {
@@ -125,13 +134,37 @@ export class AdminController {
       );
     }
 
+    // Find or create artist
+    const [artist] = await this.db.models.Artist.findOrCreate({
+      where: { name: body.artistName },
+      defaults: {
+        id: uuidv4(),
+        name: body.artistName,
+        bio: '',
+        imageUrl: '',
+      },
+    });
+
+    const albumName = body.albumName || 'Single';
+    // Find or create album
+    const [album] = await this.db.models.Album.findOrCreate({
+      where: { title: albumName, artistId: artist.getDataValue('id') },
+      defaults: {
+        id: uuidv4(),
+        title: albumName,
+        artistId: artist.getDataValue('id'),
+        releaseYear: new Date().getFullYear(),
+        imageUrl: '',
+      },
+    });
+
     const song = await this.db.models.Song.create({
       id: uuidv4(),
       title: body.title,
-      artistId: body.artistId,
-      albumId: body.albumId || null,
-      trackNumber: body.trackNumber || null,
-      durationSeconds: body.durationSeconds || 0,
+      artistId: artist.getDataValue('id'),
+      albumId: album.getDataValue('id'),
+      trackNumber: body.trackNumber || 1,
+      durationSeconds,
       audioUrl: audioUrl,
     });
     return song;
@@ -164,16 +197,43 @@ export class AdminController {
     const song = await this.db.models.Song.findByPk(id);
     if (!song) throw new NotFoundException('Song not found');
 
-    const updateData: any = {
-      title: body.title,
-      artistId: body.artistId,
-      albumId: body.albumId || null,
-      trackNumber: body.trackNumber || null,
-      durationSeconds: body.durationSeconds || (song as any).durationSeconds,
-    };
+    const updateData: any = {};
+    if (body.title) updateData.title = body.title;
+
+    if (body.artistName) {
+      const [artist] = await this.db.models.Artist.findOrCreate({
+        where: { name: body.artistName },
+        defaults: {
+          id: uuidv4(),
+          name: body.artistName,
+          bio: '',
+          imageUrl: '',
+        },
+      });
+      updateData.artistId = artist.getDataValue('id');
+
+      const albumName = body.albumName || 'Single';
+      const [album] = await this.db.models.Album.findOrCreate({
+        where: { title: albumName, artistId: artist.getDataValue('id') },
+        defaults: {
+          id: uuidv4(),
+          title: albumName,
+          artistId: artist.getDataValue('id'),
+          releaseYear: new Date().getFullYear(),
+          imageUrl: '',
+        },
+      });
+      updateData.albumId = album.getDataValue('id');
+    }
 
     if (file) {
       updateData.audioUrl = file.filename;
+      try {
+        const metadata = await mm.parseFile('./media/' + file.filename);
+        updateData.durationSeconds = Math.round(metadata.format.duration || 0);
+      } catch (err) {
+        console.error('Failed to parse metadata', err);
+      }
     } else if (body.audioUrl) {
       updateData.audioUrl = body.audioUrl;
     }
