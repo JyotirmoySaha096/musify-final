@@ -8,6 +8,7 @@ interface AuthUser {
   email: string;
   username: string;
   roles?: string[];
+  linkedAccounts?: Record<string, boolean>;
 }
 
 interface AuthContextType {

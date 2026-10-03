@@ -74,6 +74,42 @@ export default function ProfilePage() {
 
         <Divider sx={{ width: '100%', my: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
 
+        <Box width="100%">
+          <Typography variant="h6" fontWeight={700} gutterBottom>
+            Linked Accounts
+          </Typography>
+          <Box display="flex" flexDirection="column" gap={1.5} mt={2}>
+            {['google', 'microsoft', 'facebook', 'apple'].map((provider) => {
+              const isLinked = user.linkedAccounts?.[provider];
+              return (
+                <Box 
+                  key={provider} 
+                  display="flex" 
+                  justifyContent="space-between" 
+                  alignItems="center"
+                  bgcolor="rgba(255,255,255,0.02)"
+                  p={2}
+                  borderRadius={2}
+                  border="1px solid rgba(255,255,255,0.1)"
+                >
+                  <Typography sx={{ textTransform: 'capitalize', fontWeight: 500 }}>
+                    {provider}
+                  </Typography>
+                  <Chip 
+                    label={isLinked ? 'Connected' : 'Not Connected'} 
+                    color={isLinked ? 'success' : 'default'} 
+                    size="small" 
+                    variant={isLinked ? 'filled' : 'outlined'}
+                  />
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+
+        <Divider sx={{ width: '100%', my: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
+
+
         <Box display="flex" gap={2} width="100%" justifyContent="center">
           {user.roles?.includes('admin') && (
             <Button
