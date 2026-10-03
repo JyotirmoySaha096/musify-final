@@ -11,7 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 
-export function SongsTab({ token }: { token: string }) {
+export function SongsTab({ token, isAdmin }: { token: string, isAdmin: boolean }) {
   const [songs, setSongs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -133,7 +133,7 @@ export function SongsTab({ token }: { token: string }) {
               <TableCell>Title</TableCell>
               <TableCell>Artist</TableCell>
               <TableCell>Album</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              {isAdmin && <TableCell align="right">Actions</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -142,14 +142,10 @@ export function SongsTab({ token }: { token: string }) {
                 <TableCell>{song.title}</TableCell>
                 <TableCell>{song.artist?.name || song.artistName}</TableCell>
                 <TableCell>{song.album?.title || '-'}</TableCell>
-                <TableCell align="right">
-                  <Button size="small" startIcon={<EditIcon />} onClick={() => handleOpenDialog(song)}>
-                    Edit
-                  </Button>
-                  <Button size="small" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(song.id)}>
-                    Delete
-                  </Button>
-                </TableCell>
+                {isAdmin && <TableCell align="right">
+                      <Button size="small" startIcon={<EditIcon />} onClick={() => handleOpenDialog(song)}>Edit</Button>
+                      <Button size="small" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(song.id)}>Delete</Button>
+                    </TableCell>}
               </TableRow>
             ))}
             {filteredSongs.length === 0 && (
@@ -192,7 +188,7 @@ export function SongsTab({ token }: { token: string }) {
               label="Visibility Tier"
               onChange={e => setFormData({ ...formData, visibility: e.target.value })}
             >
-              <MenuItem value="public">Public (Everyone)</MenuItem>
+              {isAdmin && <MenuItem value="public">Public (Everyone)</MenuItem>}
               <MenuItem value="member">Members Only (Copyrighted)</MenuItem>
               <MenuItem value="exclusive">Exclusive</MenuItem>
             </Select>

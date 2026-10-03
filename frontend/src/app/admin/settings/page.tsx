@@ -35,12 +35,20 @@ function TabPanel(props: TabPanelProps) {
 
 export default function AdminSettings() {
   const { user, token, loading } = useAuth();
+  const isAdmin = user?.roles?.includes('admin') || false;
+  const isExclusive = user?.roles?.includes('exclusive') || false;
+  const tabs = [];
+  if (isAdmin) tabs.push({ label: 'Users', index: 0, content: <UsersTab token={token!} currentUserId={user?.id || ''} /> });
+  if (isAdmin) tabs.push({ label: 'Roles', index: 1, content: <RolesTab token={token!} /> });
+  if (isAdmin || isExclusive) tabs.push({ label: 'Songs', index: tabs.length, content: <SongsTab token={token!} isAdmin={isAdmin} /> });
   const router = useRouter();
   const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
     if (loading) return;
-    if (!user || !user.roles?.includes('admin')) {
+    const isAdmin = user?.roles?.includes('admin') || false;
+    const isExclusive = user?.roles?.includes('exclusive') || false;
+    if (!user || (!isAdmin && !isExclusive)) {
       router.push('/');
     }
   }, [user, loading, router]);
@@ -55,21 +63,15 @@ export default function AdminSettings() {
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mt: 3 }}>
         <Tabs value={tabIndex} onChange={(_, nv) => setTabIndex(nv)} aria-label="admin settings tabs">
-          <Tab label="Users" />
-          <Tab label="Roles" />
-          <Tab label="Songs" />
+          {tabs.map((t) => <Tab key={t.label} label={t.label} />)}
         </Tabs>
       </Box>
 
-      <TabPanel value={tabIndex} index={0}>
-        <UsersTab token={token!} currentUserId={user.id} />
-      </TabPanel>
-      <TabPanel value={tabIndex} index={1}>
-        <RolesTab token={token!} />
-      </TabPanel>
-      <TabPanel value={tabIndex} index={2}>
-        <SongsTab token={token!} />
-      </TabPanel>
+      {tabs.map((t, idx) => (
+        <TabPanel key={t.label} value={tabIndex} index={idx}>
+          {t.content}
+        </TabPanel>
+      ))}
     </Container>
   );
 }

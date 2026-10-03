@@ -11,6 +11,7 @@ import {
   BadRequestException,
   UseInterceptors,
   UploadedFile,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -127,6 +128,7 @@ export class AdminController {
   }
 
   @Post('songs')
+  @Roles('admin', 'exclusive')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -145,7 +147,18 @@ export class AdminController {
       }),
     }),
   )
-  async createSong(@Body() body: any, @UploadedFile() file?: any) {
+  async createSong(
+    @Body() body: any,
+    @UploadedFile() file?: any,
+    @Req() req?: any,
+  ) {
+    const isAdmin = req?.user?.roles?.includes('admin');
+    const visibility = body.visibility || 'member';
+    if (!isAdmin && visibility === 'public') {
+      throw new BadRequestException(
+        'Exclusive members cannot create public songs',
+      );
+    }
     await this.checkStorageQuota(file);
     if (!body.title || !body.artistName) {
       throw new BadRequestException('Title and artistName are required');
@@ -202,7 +215,7 @@ export class AdminController {
       trackNumber: body.trackNumber || 1,
       durationSeconds,
       audioUrl: audioUrl,
-      visibility: body.visibility || 'public',
+      visibility,
     });
     return song;
   }
