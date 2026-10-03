@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  db:
+    ports:
+      - "5433:5432"
+  api:
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3001:3001"
+  web:
+    ports:
+      - "8080:3000"
