@@ -54,6 +54,18 @@ export class DatabaseService implements OnModuleInit {
         where: { name: 'user' },
         defaults: { description: 'Standard user' },
       });
+      await Role.findOrCreate({
+        where: { name: 'member' },
+        defaults: {
+          description: 'Elevated member with access to copyrighted songs',
+        },
+      });
+      await Role.findOrCreate({
+        where: { name: 'exclusive' },
+        defaults: {
+          description: 'Exclusive member with access to all content',
+        },
+      });
     } catch (e) {
       console.error(e);
       console.warn('Failed to auto-seed roles (tables might not be ready yet)');

@@ -38,6 +38,11 @@ export function initSongModel(sequelize: Sequelize) {
         allowNull: false,
         field: 'artist_id',
       },
+      visibility: {
+        type: DataTypes.ENUM('public', 'member', 'exclusive'),
+        allowNull: false,
+        defaultValue: 'public',
+      },
     },
     {
       tableName: 'songs',

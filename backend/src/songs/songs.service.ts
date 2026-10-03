@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from '../database/database.service';
@@ -23,9 +24,21 @@ export class SongsService {
     private jwtService: JwtService,
   ) {}
 
-  async findAll(limit?: number) {
+  getAllowedVisibilities(user: any): string[] {
+    const roles = user?.roles || [];
+    if (roles.includes('admin') || roles.includes('exclusive')) {
+      return ['public', 'member', 'exclusive'];
+    }
+    if (roles.includes('member')) {
+      return ['public', 'member'];
+    }
+    return ['public'];
+  }
+
+  async findAll(user: any, limit?: number) {
     const { Song, Artist, Album } = this.db.models as any;
     return Song.findAll({
+      where: { visibility: this.getAllowedVisibilities(user) },
       include: [
         { model: Artist, as: 'artist' },
         { model: Album, as: 'album' },
@@ -35,10 +48,10 @@ export class SongsService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, user: any) {
     const { Song, Artist, Album } = this.db.models as any;
     const song = await Song.findOne({
-      where: { id },
+      where: { id, visibility: this.getAllowedVisibilities(user) },
       include: [
         { model: Artist, as: 'artist' },
         { model: Album, as: 'album' },
@@ -55,10 +68,20 @@ export class SongsService {
    * The token is signed with the same JWT_SECRET but carries type:'stream'
    * and a very short expiry so it cannot be reused or shared effectively.
    */
-  generateStreamToken(
+  async generateStreamToken(
     songId: string,
     clientIp: string,
-  ): { token: string; expiresIn: number } {
+    user: any,
+  ): Promise<{ token: string; expiresIn: number }> {
+    const { Song } = this.db.models as any;
+    const song = await Song.findOne({
+      where: { id: songId, visibility: this.getAllowedVisibilities(user) },
+    });
+    if (!song) {
+      throw new ForbiddenException(
+        'You do not have permission to stream this song',
+      );
+    }
     const payload: StreamTokenPayload = {
       songId,
       type: 'stream',
@@ -112,7 +135,9 @@ export class SongsService {
     }
 
     // 2. Load the song to get the real audio URL
-    const song = await this.findOne(songId);
+    const { Song } = this.db.models as any;
+    const song = await Song.findOne({ where: { id: songId } });
+    if (!song) throw new NotFoundException('Song not found');
     const audioUrl = song.audioUrl;
 
     // Check if it's a local file path
