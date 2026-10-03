@@ -16,7 +16,10 @@ export class AlbumsController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Request() req: any, @Query('limit') limit?: string) {
-    return this.albumsService.findAll(req.user, limit ? parseInt(limit) : undefined);
+    return this.albumsService.findAll(
+      req.user,
+      limit ? parseInt(limit) : undefined,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

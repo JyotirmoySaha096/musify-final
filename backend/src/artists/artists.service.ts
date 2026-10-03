@@ -19,13 +19,13 @@ export class ArtistsService {
     const { Artist, Song } = this.db.models as any;
     return Artist.findAll({
       include: [
-        { 
-          model: Song, 
-          as: 'songs', 
+        {
+          model: Song,
+          as: 'songs',
           attributes: [],
-          where: { visibility: this.getAllowedVisibilities(user) }, 
-          required: true 
-        }
+          where: { visibility: this.getAllowedVisibilities(user) },
+          required: true,
+        },
       ],
       order: [['name', 'ASC']],
       limit: limit ?? undefined,
