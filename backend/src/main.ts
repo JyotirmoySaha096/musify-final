@@ -21,6 +21,6 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3001;
   await app.listen(port);
-  console.log(`🎵 Spotify Clone API running on http://localhost:${port}`);
+  console.log(`🎵 Musify Clone API running on http://localhost:${port}`);
 }
 bootstrap();

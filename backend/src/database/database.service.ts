@@ -12,9 +12,9 @@ export class DatabaseService implements OnModuleInit {
   constructor() {
     const host = process.env.DB_HOST || 'localhost';
     const port = parseInt(process.env.DB_PORT || '5432', 10);
-    const username = process.env.DB_USER || 'spotify';
-    const password = process.env.DB_PASSWORD || 'spotify_secret';
-    const database = process.env.DB_NAME || 'spotify_clone';
+    const username = process.env.DB_USER || 'musify';
+    const password = process.env.DB_PASSWORD || 'musify_secret';
+    const database = process.env.DB_NAME || 'musify_clone';
 
     // Note: avoid `sync()`; schema should be managed by migrations.
     this.sequelize = new Sequelize(database, username, password, {

@@ -6,9 +6,9 @@ import { initModels } from '../models';
 
 async function run() {
   const sequelize = new Sequelize(
-    process.env.DB_NAME || 'spotify_clone',
-    process.env.DB_USER || 'spotify',
-    process.env.DB_PASSWORD || 'spotify_secret',
+    process.env.DB_NAME || 'musify_clone',
+    process.env.DB_USER || 'musify',
+    process.env.DB_PASSWORD || 'musify_secret',
     {
       host: process.env.DB_HOST || 'localhost',
       port: parseInt(process.env.DB_PORT || '5432', 10),
