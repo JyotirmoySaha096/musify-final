@@ -22,7 +22,7 @@ export function SongsTab({ token }: { token: string }) {
   const [editingSong, setEditingSong] = useState<any>(null);
   
   // Form State
-  const [formData, setFormData] = useState({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0, visibility: 'public' });
+  const [formData, setFormData] = useState({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0, visibility: 'member' });
   const [audioFile, setAudioFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -50,11 +50,11 @@ export function SongsTab({ token }: { token: string }) {
         audioUrl: song.audioUrl,
         imageUrl: song.imageUrl,
         duration: song.duration,
-        visibility: song.visibility || 'public'
+        visibility: song.visibility || 'member'
       });
     } else {
       setEditingSong(null);
-      setFormData({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0, visibility: 'public' });
+      setFormData({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0, visibility: 'member' });
       setAudioFile(null);
     }
     setOpenDialog(true);
