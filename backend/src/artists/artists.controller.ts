@@ -16,7 +16,10 @@ export class ArtistsController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Request() req: any, @Query('limit') limit?: string) {
-    return this.artistsService.findAll(req.user, limit ? parseInt(limit) : undefined);
+    return this.artistsService.findAll(
+      req.user,
+      limit ? parseInt(limit) : undefined,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

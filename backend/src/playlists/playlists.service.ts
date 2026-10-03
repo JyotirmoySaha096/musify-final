@@ -22,7 +22,6 @@ export class PlaylistsService {
     return ['public'];
   }
 
-
   async create(userId: string, dto: CreatePlaylistDto) {
     const { Playlist } = this.db.models as any;
     return Playlist.create({

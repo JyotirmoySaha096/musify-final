@@ -180,6 +180,75 @@ export default function LoginPage() {
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{ width: 20, height: 20 }} />
               Continue with Google
             </Button>
+            <Button
+              variant="outlined"
+              fullWidth
+              href={`${API_BASE}/auth/microsoft`}
+              sx={{
+                py: 1.5,
+                fontSize: 15,
+                borderRadius: 100,
+                textTransform: 'none',
+                color: 'text.primary',
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                display: 'flex',
+                gap: 1.5,
+                mt: 1.5,
+                '&:hover': {
+                  borderColor: 'rgba(255, 255, 255, 0.4)',
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
+                }
+              }}
+            >
+              <img src="https://www.svgrepo.com/show/475661/microsoft-color.svg" alt="Microsoft" style={{ width: 20, height: 20 }} />
+              Continue with Microsoft
+            </Button>
+            <Button
+              variant="outlined"
+              fullWidth
+              href={`${API_BASE}/auth/facebook`}
+              sx={{
+                py: 1.5,
+                fontSize: 15,
+                borderRadius: 100,
+                textTransform: 'none',
+                color: 'text.primary',
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                display: 'flex',
+                gap: 1.5,
+                mt: 1.5,
+                '&:hover': {
+                  borderColor: 'rgba(255, 255, 255, 0.4)',
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
+                }
+              }}
+            >
+              <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook" style={{ width: 20, height: 20 }} />
+              Continue with Facebook
+            </Button>
+            <Button
+              variant="outlined"
+              fullWidth
+              href={`${API_BASE}/auth/apple`}
+              sx={{
+                py: 1.5,
+                fontSize: 15,
+                borderRadius: 100,
+                textTransform: 'none',
+                color: 'text.primary',
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                display: 'flex',
+                gap: 1.5,
+                mt: 1.5,
+                '&:hover': {
+                  borderColor: 'rgba(255, 255, 255, 0.4)',
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
+                }
+              }}
+            >
+              <img src="https://www.svgrepo.com/show/511330/apple-173.svg" alt="Apple" style={{ width: 20, height: 20, filter: 'invert(1)' }} />
+              Continue with Apple
+            </Button>
           
 
         <Typography variant="body2" color="text.disabled" sx={{ textAlign: 'center', mt: 3 }}>

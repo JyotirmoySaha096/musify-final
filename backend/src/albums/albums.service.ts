@@ -20,13 +20,13 @@ export class AlbumsService {
     return Album.findAll({
       include: [
         { model: Artist, as: 'artist' },
-        { 
-          model: Song, 
-          as: 'songs', 
+        {
+          model: Song,
+          as: 'songs',
           attributes: [],
-          where: { visibility: this.getAllowedVisibilities(user) }, 
-          required: true 
-        }
+          where: { visibility: this.getAllowedVisibilities(user) },
+          required: true,
+        },
       ],
       order: [['title', 'ASC']],
       limit: limit ?? undefined,
@@ -46,15 +46,15 @@ export class AlbumsService {
           required: false,
           as: 'songs',
           include: [
-        { model: Artist, as: 'artist' },
-        { 
-          model: Song, 
-          as: 'songs', 
-          attributes: [],
-          where: { visibility: this.getAllowedVisibilities(user) }, 
-          required: true 
-        }
-      ],
+            { model: Artist, as: 'artist' },
+            {
+              model: Song,
+              as: 'songs',
+              attributes: [],
+              where: { visibility: this.getAllowedVisibilities(user) },
+              required: true,
+            },
+          ],
         },
       ],
     });
