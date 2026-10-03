@@ -30,7 +30,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     };
 
     // We will hook this into your actual AuthService logic shortly
-    const payload = await this.authService.validateOAuthLogin(user);
+    const payload = await this.authService.validateOAuthLogin(
+      user,
+      'google',
+      profile.id,
+    );
     done(null, payload);
   }
 }

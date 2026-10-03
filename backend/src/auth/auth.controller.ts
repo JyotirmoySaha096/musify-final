@@ -42,7 +42,46 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Request() req: any, @Res() res: any) {
     const { accessToken } = req.user;
-    // Redirect back to frontend with token
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
+    res.redirect(`${frontendUrl}/login?token=${accessToken}`);
+  }
+
+  // --- MICROSOFT ---
+  @Get('microsoft')
+  @UseGuards(AuthGuard('microsoft'))
+  async microsoftAuth() {}
+
+  @Get('microsoft/callback')
+  @UseGuards(AuthGuard('microsoft'))
+  async microsoftAuthRedirect(@Request() req: any, @Res() res: any) {
+    const { accessToken } = req.user;
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
+    res.redirect(`${frontendUrl}/login?token=${accessToken}`);
+  }
+
+  // --- FACEBOOK ---
+  @Get('facebook')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuth() {}
+
+  @Get('facebook/callback')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuthRedirect(@Request() req: any, @Res() res: any) {
+    const { accessToken } = req.user;
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
+    res.redirect(`${frontendUrl}/login?token=${accessToken}`);
+  }
+
+  // --- APPLE ---
+  @Get('apple')
+  @UseGuards(AuthGuard('apple'))
+  async appleAuth() {}
+
+  @Post('apple/callback')
+  @UseGuards(AuthGuard('apple'))
+  async appleAuthRedirect(@Request() req: any, @Res() res: any) {
+    // Apple sends a POST request to the callback URL
+    const { accessToken } = req.user;
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
     res.redirect(`${frontendUrl}/login?token=${accessToken}`);
   }

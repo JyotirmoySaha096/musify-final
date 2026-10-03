@@ -106,27 +106,56 @@ export class AuthService {
     };
   }
 
-  async validateOAuthLogin(user: { email: string; username: string }) {
-    let existingUser = await this.db.models.User.findOne({
-      where: { email: user.email },
-      include: [
-        {
-          model: this.db.models.Role,
-          as: 'roles',
-          attributes: ['name'],
-          through: { attributes: [] },
-        },
-      ],
-    });
+  async validateOAuthLogin(
+    user: { email: string; username: string },
+    provider?: string,
+    providerId?: string,
+  ) {
+    let existingUser: any = null;
+
+    if (provider && providerId) {
+      existingUser = await this.db.models.User.findOne({
+        where: { [`${provider}Id`]: providerId },
+        include: [
+          {
+            model: this.db.models.Role,
+            as: 'roles',
+            attributes: ['name'],
+            through: { attributes: [] },
+          },
+        ],
+      });
+    }
 
     if (!existingUser) {
-      existingUser = await this.db.models.User.create({
+      existingUser = await this.db.models.User.findOne({
+        where: { email: user.email },
+        include: [
+          {
+            model: this.db.models.Role,
+            as: 'roles',
+            attributes: ['name'],
+            through: { attributes: [] },
+          },
+        ],
+      });
+      if (existingUser && provider && providerId) {
+        await (existingUser as any).update({ [`${provider}Id`]: providerId });
+      }
+    }
+
+    if (!existingUser) {
+      const data: any = {
         id: uuidv4(),
         email: user.email,
         username: user.username,
         passwordHash: '', // No password for OAuth
         avatarUrl: null,
-      });
+      };
+      if (provider && providerId) {
+        data[`${provider}Id`] = providerId;
+      }
+      existingUser = await this.db.models.User.create(data);
       // Re-fetch with roles association
       existingUser = await this.db.models.User.findOne({
         where: { id: (existingUser as any).id },
