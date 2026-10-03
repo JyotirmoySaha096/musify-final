@@ -104,7 +104,6 @@ export class AdminController {
     return { success: true, message: 'User deleted' };
   }
 
-  
   @Put('users/:id/status')
   async updateUserStatus(
     @Param('id') id: string,
@@ -114,7 +113,10 @@ export class AdminController {
     if (!user) throw new NotFoundException('User not found');
 
     await user.update({ isActive });
-    return { success: true, message: isActive ? 'User enabled' : 'User disabled' };
+    return {
+      success: true,
+      message: isActive ? 'User enabled' : 'User disabled',
+    };
   }
 
   @Put('users/:id/roles')
