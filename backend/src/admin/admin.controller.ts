@@ -111,7 +111,7 @@ export class AdminController {
   )
   async createSong(
     @Body() body: any,
-    @UploadedFile() file?: Express.Multer.File,
+    @UploadedFile() file?: any,
   ) {
     if (!body.title || !body.artistId) {
       throw new BadRequestException('Title and artistId are required');
@@ -162,7 +162,7 @@ export class AdminController {
   async updateSong(
     @Param('id') id: string,
     @Body() body: any,
-    @UploadedFile() file?: Express.Multer.File,
+    @UploadedFile() file?: any,
   ) {
     const song = await this.db.models.Song.findByPk(id);
     if (!song) throw new NotFoundException('Song not found');
@@ -172,7 +172,7 @@ export class AdminController {
       artistId: body.artistId,
       albumId: body.albumId || null,
       trackNumber: body.trackNumber || null,
-      durationSeconds: body.durationSeconds || song.durationSeconds,
+      durationSeconds: body.durationSeconds || (song as any).durationSeconds,
     };
 
     if (file) {
