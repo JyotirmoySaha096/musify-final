@@ -13,6 +13,7 @@ import * as path from 'path';
 interface StreamTokenPayload {
   songId: string;
   type: 'stream';
+  ip: string;
 }
 
 @Injectable()
@@ -54,10 +55,17 @@ export class SongsService {
    * The token is signed with the same JWT_SECRET but carries type:'stream'
    * and a very short expiry so it cannot be reused or shared effectively.
    */
-  generateStreamToken(songId: string): { token: string; expiresIn: number } {
-    const payload: StreamTokenPayload = { songId, type: 'stream' };
-    const token = this.jwtService.sign(payload, { expiresIn: '12h' });
-    return { token, expiresIn: 43200 };
+  generateStreamToken(
+    songId: string,
+    clientIp: string,
+  ): { token: string; expiresIn: number } {
+    const payload: StreamTokenPayload = {
+      songId,
+      type: 'stream',
+      ip: clientIp,
+    };
+    const token = this.jwtService.sign(payload, { expiresIn: '30m' });
+    return { token, expiresIn: 1800 };
   }
 
   /**
@@ -77,6 +85,7 @@ export class SongsService {
     songId: string,
     token: string,
     range: string | undefined,
+    clientIp: string,
     res: any,
   ) {
     // 1. Validate the stream token
@@ -92,6 +101,13 @@ export class SongsService {
     if (payload.type !== 'stream' || payload.songId !== songId) {
       throw new UnauthorizedException(
         'Token does not match the requested song',
+      );
+    }
+
+    // 1b. Verify IP binding — reject if requester's IP differs from token
+    if (payload.ip && payload.ip !== clientIp) {
+      throw new UnauthorizedException(
+        'Stream token is bound to a different network',
       );
     }
 
