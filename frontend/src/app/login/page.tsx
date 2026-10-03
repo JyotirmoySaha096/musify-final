@@ -180,6 +180,7 @@ export default function LoginPage() {
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{ width: 20, height: 20 }} />
               Continue with Google
             </Button>
+            {process.env.NEXT_PUBLIC_ENABLE_MICROSOFT_SSO === 'true' && (
             <Button
               variant="outlined"
               fullWidth
@@ -200,9 +201,11 @@ export default function LoginPage() {
                 }
               }}
             >
-              <img src="https://www.svgrepo.com/show/475661/microsoft-color.svg" alt="Microsoft" style={{ width: 20, height: 20 }} />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" style={{ width: 20, height: 20 }} />
               Continue with Microsoft
             </Button>
+          )}
+            {process.env.NEXT_PUBLIC_ENABLE_FACEBOOK_SSO === 'true' && (
             <Button
               variant="outlined"
               fullWidth
@@ -223,9 +226,11 @@ export default function LoginPage() {
                 }
               }}
             >
-              <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook" style={{ width: 20, height: 20 }} />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook" style={{ width: 20, height: 20 }} />
               Continue with Facebook
             </Button>
+          )}
+            {process.env.NEXT_PUBLIC_ENABLE_APPLE_SSO === 'true' && (
             <Button
               variant="outlined"
               fullWidth
@@ -246,9 +251,10 @@ export default function LoginPage() {
                 }
               }}
             >
-              <img src="https://www.svgrepo.com/show/511330/apple-173.svg" alt="Apple" style={{ width: 20, height: 20, filter: 'invert(1)' }} />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" style={{ width: 20, height: 20, filter: 'invert(1)' }} />
               Continue with Apple
             </Button>
+          )}
           
 
         <Typography variant="body2" color="text.disabled" sx={{ textAlign: 'center', mt: 3 }}>
