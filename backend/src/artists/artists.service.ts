@@ -15,10 +15,18 @@ export class ArtistsService {
     return ['public'];
   }
 
-
-  async findAll(limit?: number) {
-    const { Artist } = this.db.models as any;
+  async findAll(user: any, limit?: number) {
+    const { Artist, Song } = this.db.models as any;
     return Artist.findAll({
+      include: [
+        { 
+          model: Song, 
+          as: 'songs', 
+          attributes: [],
+          where: { visibility: this.getAllowedVisibilities(user) }, 
+          required: true 
+        }
+      ],
       order: [['name', 'ASC']],
       limit: limit ?? undefined,
     });
@@ -33,9 +41,21 @@ export class ArtistsService {
         {
           model: Album,
           as: 'albums',
-          include: [{ model: Song, as: 'songs', where: { visibility: this.getAllowedVisibilities(user) }, required: false }],
+          include: [
+            {
+              model: Song,
+              as: 'songs',
+              where: { visibility: this.getAllowedVisibilities(user) },
+              required: false,
+            },
+          ],
         },
-        { model: Song, as: 'songs', where: { visibility: this.getAllowedVisibilities(user) }, required: false },
+        {
+          model: Song,
+          as: 'songs',
+          where: { visibility: this.getAllowedVisibilities(user) },
+          required: false,
+        },
       ],
     });
 
