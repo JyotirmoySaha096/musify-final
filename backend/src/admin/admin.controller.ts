@@ -15,6 +15,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
+import * as fs from 'fs';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -27,6 +28,40 @@ import * as mm from 'music-metadata';
 @Roles('admin')
 export class AdminController {
   constructor(private db: DatabaseService) {}
+
+  private async checkStorageQuota(newFile?: any) {
+    if (!newFile) return;
+    const mediaDir = './media';
+    let totalSize = 0;
+    try {
+      if (fs.existsSync(mediaDir)) {
+        const files = await fs.promises.readdir(mediaDir);
+        for (const f of files) {
+          const stats = await fs.promises.stat(path.join(mediaDir, f));
+          totalSize += stats.size;
+        }
+      }
+    } catch (err) {
+      console.error('Failed to calculate directory size', err);
+    }
+
+    const maxGb = parseFloat(process.env.MAX_MEDIA_STORAGE_GB || '5');
+    const maxBytes = maxGb * 1024 * 1024 * 1024;
+
+    if (totalSize > maxBytes) {
+      // Rollback: delete the newly uploaded file
+      try {
+        if (newFile && newFile.filename) {
+          fs.unlinkSync(path.join(mediaDir, newFile.filename));
+        }
+      } catch (e) {
+        console.error('Failed to delete', e);
+      }
+      throw new BadRequestException(
+        `Storage quota exceeded (${maxGb}GB limit). Cannot upload more files.`,
+      );
+    }
+  }
 
   @Get('users')
   async getAllUsers() {
@@ -111,6 +146,7 @@ export class AdminController {
     }),
   )
   async createSong(@Body() body: any, @UploadedFile() file?: any) {
+    await this.checkStorageQuota(file);
     if (!body.title || !body.artistName) {
       throw new BadRequestException('Title and artistName are required');
     }
@@ -194,6 +230,7 @@ export class AdminController {
     @Body() body: any,
     @UploadedFile() file?: any,
   ) {
+    await this.checkStorageQuota(file);
     const song = await this.db.models.Song.findByPk(id);
     if (!song) throw new NotFoundException('Song not found');
 
