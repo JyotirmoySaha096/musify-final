@@ -56,8 +56,8 @@ export class SongsService {
    */
   generateStreamToken(songId: string): { token: string; expiresIn: number } {
     const payload: StreamTokenPayload = { songId, type: 'stream' };
-    const token = this.jwtService.sign(payload, { expiresIn: '4s' });
-    return { token, expiresIn: 4 };
+    const token = this.jwtService.sign(payload, { expiresIn: '12h' });
+    return { token, expiresIn: 43200 };
   }
 
   /**

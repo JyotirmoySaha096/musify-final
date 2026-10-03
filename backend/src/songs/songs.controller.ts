@@ -41,7 +41,7 @@ export class SongsController {
   /**
    * Stream the audio for a song.
    * Authentication is performed via the short-lived `token` query param
-   * (signed by the server, expires in 4s, tied to this specific songId).
+   * (signed by the server, expires in 12h, tied to this specific songId).
    * No long-term credentials are embedded in the URL.
    */
   @Get(':id/stream')
