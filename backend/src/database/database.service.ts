@@ -1,4 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { Sequelize } from 'sequelize';
 import { initModels } from '../models';
 
