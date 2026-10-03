@@ -23,9 +23,9 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_USERNAME=musify
+      - DB_USER=musify
       - DB_PASSWORD=musify_secret
-      - DB_DATABASE=musify-db
+      - DB_NAME=musify-db
     depends_on:
       - db
     networks:
