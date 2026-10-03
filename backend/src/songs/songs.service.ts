@@ -64,8 +64,9 @@ export class SongsService {
       type: 'stream',
       ip: clientIp,
     };
-    const token = this.jwtService.sign(payload, { expiresIn: '30m' });
-    return { token, expiresIn: 1800 };
+    const expiresIn = parseInt(process.env.STREAM_JWT_EXPIRES_IN || '1800', 10);
+    const token = this.jwtService.sign(payload, { expiresIn });
+    return { token, expiresIn };
   }
 
   /**
