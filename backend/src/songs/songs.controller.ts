@@ -36,7 +36,10 @@ export class SongsController {
   getStreamToken(@Param('id') id: string, @Request() req: any) {
     // req.user is populated by JwtAuthGuard from the bearer token
     void req.user; // ensure guard ran
-    const clientIp = req.headers['x-real-ip'] || req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    const clientIp =
+      req.headers['x-real-ip'] ||
+      req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+      req.ip;
     return this.songsService.generateStreamToken(id, clientIp);
   }
 
@@ -54,7 +57,10 @@ export class SongsController {
     @Req() req: any,
     @Res() res: Response,
   ) {
-    const clientIp = req.headers['x-real-ip'] || req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    const clientIp =
+      req.headers['x-real-ip'] ||
+      req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+      req.ip;
     return this.songsService.streamAudio(id, token, range, clientIp, res);
   }
 }

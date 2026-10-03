@@ -55,8 +55,15 @@ export class SongsService {
    * The token is signed with the same JWT_SECRET but carries type:'stream'
    * and a very short expiry so it cannot be reused or shared effectively.
    */
-  generateStreamToken(songId: string, clientIp: string): { token: string; expiresIn: number } {
-    const payload: StreamTokenPayload = { songId, type: 'stream', ip: clientIp };
+  generateStreamToken(
+    songId: string,
+    clientIp: string,
+  ): { token: string; expiresIn: number } {
+    const payload: StreamTokenPayload = {
+      songId,
+      type: 'stream',
+      ip: clientIp,
+    };
     const token = this.jwtService.sign(payload, { expiresIn: '30m' });
     return { token, expiresIn: 1800 };
   }
