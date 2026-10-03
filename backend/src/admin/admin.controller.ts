@@ -109,10 +109,7 @@ export class AdminController {
       }),
     }),
   )
-  async createSong(
-    @Body() body: any,
-    @UploadedFile() file?: any,
-  ) {
+  async createSong(@Body() body: any, @UploadedFile() file?: any) {
     if (!body.title || !body.artistId) {
       throw new BadRequestException('Title and artistId are required');
     }
