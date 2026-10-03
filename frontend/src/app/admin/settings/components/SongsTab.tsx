@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { adminApi, songsApi } from '@/lib/api';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Button, CircularProgress, Box, Alert, Paper, TextField, InputAdornment,
+  Button, CircularProgress, Box, Alert, Paper, TextField, InputAdornment, Typography,
   Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -21,14 +21,8 @@ export function SongsTab({ token }: { token: string }) {
   const [editingSong, setEditingSong] = useState<any>(null);
   
   // Form State
-  const [formData, setFormData] = useState({
-    title: '',
-    artistId: '',
-    albumId: '',
-    audioUrl: '',
-    imageUrl: '',
-    duration: 0
-  });
+  const [formData, setFormData] = useState({ title: '', artistId: '', albumId: '', audioUrl: '', imageUrl: '', duration: 0 });
+  const [audioFile, setAudioFile] = useState<File | null>(null);
 
   useEffect(() => {
     fetchSongs();
@@ -59,16 +53,26 @@ export function SongsTab({ token }: { token: string }) {
     } else {
       setEditingSong(null);
       setFormData({ title: '', artistId: '', albumId: '', audioUrl: '', imageUrl: '', duration: 0 });
+      setAudioFile(null);
     }
     setOpenDialog(true);
   };
 
   const handleSave = async () => {
     try {
+      const data = new FormData();
+      data.append('title', formData.title);
+      data.append('artistId', formData.artistId);
+      if (formData.albumId) data.append('albumId', formData.albumId);
+      if (formData.audioUrl) data.append('audioUrl', formData.audioUrl);
+      if (formData.imageUrl) data.append('imageUrl', formData.imageUrl);
+      if (formData.duration) data.append('durationSeconds', formData.duration.toString());
+      if (audioFile) data.append('file', audioFile);
+
       if (editingSong) {
-        await adminApi.updateSong(editingSong.id, formData, token);
+        await adminApi.updateSong(editingSong.id, data as any, token);
       } else {
-        await adminApi.createSong(formData, token);
+        await adminApi.createSong(data as any, token);
       }
       setOpenDialog(false);
       fetchSongs();
@@ -178,12 +182,16 @@ export function SongsTab({ token }: { token: string }) {
               value={formData.albumId} 
               onChange={e => setFormData({ ...formData, albumId: e.target.value })} 
             />
-            <TextField 
-              label="Audio URL" 
-              fullWidth 
-              value={formData.audioUrl} 
-              onChange={e => setFormData({ ...formData, audioUrl: e.target.value })} 
-            />
+            <TextField label="Audio URL" fullWidth value={formData.audioUrl} onChange={e => setFormData({ ...formData, audioUrl: e.target.value })} helperText="Provide an external URL, or upload a file below" />
+            <Box mt={2}>
+              <Typography variant="subtitle2">Or upload audio file (MP3):</Typography>
+              <input 
+                type="file" 
+                accept="audio/*" 
+                onChange={e => setAudioFile(e.target.files?.[0] || null)} 
+              />
+            </Box>
+
             <TextField 
               label="Image URL" 
               fullWidth 

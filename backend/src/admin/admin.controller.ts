@@ -9,7 +9,12 @@ import {
   UseGuards,
   NotFoundException,
   BadRequestException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -86,23 +91,97 @@ export class AdminController {
   }
 
   @Post('songs')
-  async createSong(@Body() body: any) {
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './media',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(
+            null,
+            file.fieldname +
+              '-' +
+              uniqueSuffix +
+              path.extname(file.originalname),
+          );
+        },
+      }),
+    }),
+  )
+  async createSong(
+    @Body() body: any,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
     if (!body.title || !body.artistId) {
       throw new BadRequestException('Title and artistId are required');
     }
+
+    let audioUrl = body.audioUrl;
+    if (file) {
+      audioUrl = file.filename;
+    }
+
+    if (!audioUrl) {
+      throw new BadRequestException(
+        'Either audioUrl or an uploaded file is required',
+      );
+    }
+
     const song = await this.db.models.Song.create({
       id: uuidv4(),
-      ...body,
+      title: body.title,
+      artistId: body.artistId,
+      albumId: body.albumId || null,
+      trackNumber: body.trackNumber || null,
+      durationSeconds: body.durationSeconds || 0,
+      audioUrl: audioUrl,
     });
     return song;
   }
 
   @Put('songs/:id')
-  async updateSong(@Param('id') id: string, @Body() body: any) {
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './media',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(
+            null,
+            file.fieldname +
+              '-' +
+              uniqueSuffix +
+              path.extname(file.originalname),
+          );
+        },
+      }),
+    }),
+  )
+  async updateSong(
+    @Param('id') id: string,
+    @Body() body: any,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
     const song = await this.db.models.Song.findByPk(id);
     if (!song) throw new NotFoundException('Song not found');
 
-    await song.update(body);
+    const updateData: any = {
+      title: body.title,
+      artistId: body.artistId,
+      albumId: body.albumId || null,
+      trackNumber: body.trackNumber || null,
+      durationSeconds: body.durationSeconds || song.durationSeconds,
+    };
+
+    if (file) {
+      updateData.audioUrl = file.filename;
+    } else if (body.audioUrl) {
+      updateData.audioUrl = body.audioUrl;
+    }
+
+    await song.update(updateData);
     return song;
   }
 

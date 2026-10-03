@@ -17,10 +17,7 @@ async function request<T>(
 ): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
-    headers: {
-      ...getHeaders(token),
-      ...(options.headers || {}),
-    },
+    headers: (() => { const h = { ...getHeaders(token), ...(options.headers || {}) }; if (options.body instanceof FormData) delete h['Content-Type']; return h; })(),
   });
 
   if (!res.ok) {
@@ -36,12 +33,12 @@ export const authApi = {
   register: (data: { email: string; username: string; password: string }) =>
     request<{ user: any; accessToken: string }>('/auth/register', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: data instanceof FormData ? data : JSON.stringify(data),
     }),
   login: (data: { email: string; password: string }) =>
     request<{ user: any; accessToken: string }>('/auth/login', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: data instanceof FormData ? data : JSON.stringify(data),
     }),
   me: (token: string) =>
     request<any>('/auth/me', {}, token),
@@ -80,7 +77,7 @@ export const playlistsApi = {
   create: (token: string, data: { name: string }) =>
     request<any>('/playlists', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: data instanceof FormData ? data : JSON.stringify(data),
     }, token),
   addSong: (token: string, playlistId: string, songId: string) =>
     request<any>(`/playlists/${playlistId}/songs`, {
@@ -124,9 +121,9 @@ export const adminApi = {
   getRoles: (token: string) =>
     request<any[]>('/admin/roles', {}, token),
   createSong: (data: any, token: string) =>
-    request<any>('/admin/songs', { method: 'POST', body: JSON.stringify(data) }, token),
+    request<any>('/admin/songs', { method: 'POST', body: data instanceof FormData ? data : JSON.stringify(data) }, token),
   updateSong: (id: string, data: any, token: string) =>
-    request<any>(`/admin/songs/${id}`, { method: 'PUT', body: JSON.stringify(data) }, token),
+    request<any>(`/admin/songs/${id}`, { method: 'PUT', body: data instanceof FormData ? data : JSON.stringify(data) }, token),
   deleteSong: (id: string, token: string) =>
     request<{ message: string }>(`/admin/songs/${id}`, { method: 'DELETE' }, token),
 };

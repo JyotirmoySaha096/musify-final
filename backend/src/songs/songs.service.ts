@@ -7,6 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from '../database/database.service';
 import * as http from 'http';
 import * as https from 'https';
+import * as fs from 'fs';
+import * as path from 'path';
 
 interface StreamTokenPayload {
   songId: string;
@@ -97,6 +99,44 @@ export class SongsService {
     const song = await this.findOne(songId);
     const audioUrl = song.audioUrl;
 
+    // Check if it's a local file path
+    if (!audioUrl.startsWith('http')) {
+      // Determine the absolute path. If it's just a filename, assume it's in a 'media' folder in the project root
+      const audioPath = path.isAbsolute(audioUrl)
+        ? audioUrl
+        : path.join(process.cwd(), 'media', audioUrl);
+
+      if (!fs.existsSync(audioPath)) {
+        throw new NotFoundException('Audio file not found on server');
+      }
+
+      const stat = fs.statSync(audioPath);
+      const fileSize = stat.size;
+
+      res.setHeader('Content-Disposition', 'inline');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('Content-Type', 'audio/mpeg');
+
+      if (range) {
+        const parts = range.replace(/bytes=/, '').split('-');
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        const chunksize = end - start + 1;
+
+        res.setHeader('Content-Range', `bytes ${start}-${end}/${fileSize}`);
+        res.setHeader('Accept-Ranges', 'bytes');
+        res.setHeader('Content-Length', chunksize);
+        res.status(206);
+        fs.createReadStream(audioPath, { start, end }).pipe(res);
+      } else {
+        res.setHeader('Content-Length', fileSize);
+        res.status(200);
+        fs.createReadStream(audioPath).pipe(res);
+      }
+      return;
+    }
+
+    // It's a remote URL, proxy it
     const client = audioUrl.startsWith('https') ? https : http;
 
     const requestHeaders: Record<string, string> = {};
