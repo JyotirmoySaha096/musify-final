@@ -147,11 +147,17 @@ export class AdminController {
       }),
     }),
   )
-  async createSong(@Body() body: any, @UploadedFile() file?: any, @Req() req?: any) {
+  async createSong(
+    @Body() body: any,
+    @UploadedFile() file?: any,
+    @Req() req?: any,
+  ) {
     const isAdmin = req?.user?.roles?.includes('admin');
     const visibility = body.visibility || 'member';
     if (!isAdmin && visibility === 'public') {
-      throw new BadRequestException('Exclusive members cannot create public songs');
+      throw new BadRequestException(
+        'Exclusive members cannot create public songs',
+      );
     }
     await this.checkStorageQuota(file);
     if (!body.title || !body.artistName) {
