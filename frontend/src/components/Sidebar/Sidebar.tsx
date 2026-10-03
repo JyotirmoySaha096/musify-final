@@ -295,10 +295,10 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }: SidebarPr
                 Profile
               </MenuItem>
               
-              {user.roles?.includes('admin') && (
+              {(user.roles?.includes('admin') || user.roles?.includes('exclusive')) && (
                 <MenuItem component={Link} href="/admin/settings" onClick={handleMenuClose}>
                   <ListItemIcon><SettingsIcon fontSize="small" sx={{ color: 'text.secondary' }} /></ListItemIcon>
-                  Admin Settings
+                  {user.roles?.includes('admin') ? 'Admin Settings' : 'Uploads'}
                 </MenuItem>
               )}
               

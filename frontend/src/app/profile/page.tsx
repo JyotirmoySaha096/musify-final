@@ -111,14 +111,14 @@ export default function ProfilePage() {
 
 
         <Box display="flex" gap={2} width="100%" justifyContent="center">
-          {user.roles?.includes('admin') && (
+          {(user.roles?.includes('admin') || user.roles?.includes('exclusive')) && (
             <Button
               variant="outlined"
               color="inherit"
               component={Link}
               href="/admin/settings"
             >
-              Admin Dashboard
+              {user.roles?.includes('admin') ? 'Admin Dashboard' : 'Upload Dashboard'}
             </Button>
           )}
           <Button
