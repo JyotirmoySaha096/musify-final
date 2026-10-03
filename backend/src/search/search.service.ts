@@ -27,7 +27,10 @@ export class SearchService {
 
     const [songs, albums, artists] = await Promise.all([
       Song.findAll({
-        where: { title: { [Op.iLike]: pattern }, visibility: this.getAllowedVisibilities(user) },
+        where: {
+          title: { [Op.iLike]: pattern },
+          visibility: this.getAllowedVisibilities(user),
+        },
         include: [
           { model: Artist, as: 'artist' },
           { model: Album, as: 'album' },
