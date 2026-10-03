@@ -42,5 +42,20 @@ export class DatabaseService implements OnModuleInit {
   async onModuleInit() {
     // Ensure the DB is reachable on app startup.
     await this.sequelize.authenticate();
+
+    // Auto-seed default roles
+    try {
+      const Role = this.models.Role;
+      await Role.findOrCreate({
+        where: { name: 'admin' },
+        defaults: { description: 'Administrator with full access' },
+      });
+      await Role.findOrCreate({
+        where: { name: 'user' },
+        defaults: { description: 'Standard user' },
+      });
+    } catch (e) { console.error(e);
+      console.warn('Failed to auto-seed roles (tables might not be ready yet)');
+    }
   }
 }
