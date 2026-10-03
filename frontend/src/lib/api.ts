@@ -4,8 +4,9 @@ function getHeaders(token?: string | null): HeadersInit {
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   };
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+  const actualToken = token || (typeof window !== 'undefined' ? localStorage.getItem('spotify_token') : null);
+  if (actualToken) {
+    headers['Authorization'] = `Bearer ${actualToken}`;
   }
   return headers;
 }

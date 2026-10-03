@@ -42,7 +42,7 @@ export default function HomePage() {
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [authLoading, user, router]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
