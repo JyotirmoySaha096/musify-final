@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { adminApi, songsApi } from '@/lib/api';
 import {
+  MenuItem, Select, FormControl, InputLabel,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Button, CircularProgress, Box, Alert, Paper, TextField, InputAdornment, Typography,
   Dialog, DialogTitle, DialogContent, DialogActions
@@ -21,7 +22,7 @@ export function SongsTab({ token }: { token: string }) {
   const [editingSong, setEditingSong] = useState<any>(null);
   
   // Form State
-  const [formData, setFormData] = useState({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0 });
+  const [formData, setFormData] = useState({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0, visibility: 'public' });
   const [audioFile, setAudioFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -48,11 +49,12 @@ export function SongsTab({ token }: { token: string }) {
         albumName: song.albumName || '',
         audioUrl: song.audioUrl,
         imageUrl: song.imageUrl,
-        duration: song.duration
+        duration: song.duration,
+        visibility: song.visibility || 'public'
       });
     } else {
       setEditingSong(null);
-      setFormData({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0 });
+      setFormData({ title: '', artistName: '', albumName: '', audioUrl: '', imageUrl: '', duration: 0, visibility: 'public' });
       setAudioFile(null);
     }
     setOpenDialog(true);
@@ -66,6 +68,7 @@ export function SongsTab({ token }: { token: string }) {
       if (formData.albumName) data.append('albumName', formData.albumName);
       if (formData.audioUrl) data.append('audioUrl', formData.audioUrl);
       if (formData.imageUrl) data.append('imageUrl', formData.imageUrl);
+      if (formData.visibility) data.append('visibility', formData.visibility);
       
       if (audioFile) data.append('file', audioFile);
 
@@ -180,8 +183,20 @@ export function SongsTab({ token }: { token: string }) {
               label="Album Name" 
               fullWidth 
               value={formData.albumName} 
-              onChange={e => setFormData({ ...formData, albumName: e.target.value })} 
-            />
+              onChange={e => setFormData({ ...formData, albumName: e.target.value })}
+          />
+          <FormControl fullWidth sx={{ mt: 2 }} size="small">
+            <InputLabel>Visibility Tier</InputLabel>
+            <Select
+              value={formData.visibility}
+              label="Visibility Tier"
+              onChange={e => setFormData({ ...formData, visibility: e.target.value })}
+            >
+              <MenuItem value="public">Public (Everyone)</MenuItem>
+              <MenuItem value="member">Members Only (Copyrighted)</MenuItem>
+              <MenuItem value="exclusive">Exclusive</MenuItem>
+            </Select>
+          </FormControl>
             <TextField label="Audio URL" fullWidth value={formData.audioUrl} onChange={e => setFormData({ ...formData, audioUrl: e.target.value })} helperText="Provide an external URL, or upload a file below" />
             <Box mt={2}>
               <Typography variant="subtitle2">Or upload audio file (MP3):</Typography>

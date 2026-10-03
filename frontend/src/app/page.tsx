@@ -11,8 +11,12 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { albumsApi, artistsApi, songsApi } from '@/lib/api';
 import Card, { CardGrid } from '@/components/Card/Card';
 import { usePlayer } from '@/context/PlayerContext';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [albums, setAlbums] = useState<any[]>([]);
   const [artists, setArtists] = useState<any[]>([]);
   const [songs, setSongs] = useState<any[]>([]);
@@ -20,6 +24,12 @@ export default function HomePage() {
   const { playTrack } = usePlayer();
 
   useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+      return;
+    }
+    if (authLoading || !user) return; // Wait for auth to finish before fetching data
+
     Promise.all([
       albumsApi.getAll(8),
       artistsApi.getAll(6),
@@ -32,7 +42,7 @@ export default function HomePage() {
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [authLoading, user, router]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();

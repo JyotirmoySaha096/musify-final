@@ -202,6 +202,7 @@ export class AdminController {
       trackNumber: body.trackNumber || 1,
       durationSeconds,
       audioUrl: audioUrl,
+      visibility: body.visibility || 'public',
     });
     return song;
   }
@@ -236,6 +237,7 @@ export class AdminController {
 
     const updateData: any = {};
     if (body.title) updateData.title = body.title;
+    if (body.visibility) updateData.visibility = body.visibility;
 
     if (body.artistName) {
       const [artist] = await this.db.models.Artist.findOrCreate({

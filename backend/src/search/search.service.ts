@@ -6,7 +6,18 @@ import { DatabaseService } from '../database/database.service';
 export class SearchService {
   constructor(private db: DatabaseService) {}
 
-  async search(query: string) {
+  getAllowedVisibilities(user: any): string[] {
+    const roles = user?.roles || [];
+    if (roles.includes('admin') || roles.includes('exclusive')) {
+      return ['public', 'member', 'exclusive'];
+    }
+    if (roles.includes('member')) {
+      return ['public', 'member'];
+    }
+    return ['public'];
+  }
+
+  async search(query: string, user: any) {
     if (!query.trim()) {
       return { songs: [], albums: [], artists: [] };
     }
@@ -16,7 +27,10 @@ export class SearchService {
 
     const [songs, albums, artists] = await Promise.all([
       Song.findAll({
-        where: { title: { [Op.iLike]: pattern } },
+        where: {
+          title: { [Op.iLike]: pattern },
+          visibility: this.getAllowedVisibilities(user),
+        },
         include: [
           { model: Artist, as: 'artist' },
           { model: Album, as: 'album' },

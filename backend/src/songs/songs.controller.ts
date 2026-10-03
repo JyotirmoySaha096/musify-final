@@ -17,14 +17,19 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class SongsController {
   constructor(private songsService: SongsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query('limit') limit?: string) {
-    return this.songsService.findAll(limit ? parseInt(limit) : undefined);
+  findAll(@Request() req: any, @Query('limit') limit?: string) {
+    return this.songsService.findAll(
+      req.user,
+      limit ? parseInt(limit) : undefined,
+    );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.songsService.findOne(id);
+  findOne(@Param('id') id: string, @Request() req: any) {
+    return this.songsService.findOne(id, req.user);
   }
 
   /**
@@ -33,14 +38,13 @@ export class SongsController {
    */
   @UseGuards(JwtAuthGuard)
   @Get(':id/stream-token')
-  getStreamToken(@Param('id') id: string, @Request() req: any) {
+  async getStreamToken(@Param('id') id: string, @Request() req: any) {
     // req.user is populated by JwtAuthGuard from the bearer token
-    void req.user; // ensure guard ran
     const clientIp =
       req.headers['x-real-ip'] ||
       req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
       req.ip;
-    return this.songsService.generateStreamToken(id, clientIp);
+    return await this.songsService.generateStreamToken(id, clientIp, req.user);
   }
 
   /**

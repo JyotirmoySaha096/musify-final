@@ -1,62 +1,36 @@
 const dotenv = require('dotenv');
+const path = require('path');
 
 // Load environment variables from `.env` if present.
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 module.exports = {
   development: {
     dialect: 'postgres',
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    username: process.env.DB_USER || 'spotify',
-    password: process.env.DB_PASSWORD || 'spotify_secret',
-    database: process.env.DB_NAME || 'spotify_clone',
+    username: process.env.DB_USER || 'musify',
+    password: process.env.DB_PASSWORD || 'musify_secret',
+    database: process.env.DB_NAME || 'musify_clone',
     logging: false,
-    // SSL Disabled for Docker compatibility
-    // ...(process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1' && {
-    //   dialectOptions: {
-    //     ssl: {
-    //       require: true,
-    //       rejectUnauthorized: false
-    //     }
-    //   }
-    // })
   },
   test: {
     dialect: 'postgres',
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    username: process.env.DB_USER || 'spotify',
-    password: process.env.DB_PASSWORD || 'spotify_secret',
-    database: process.env.DB_NAME || 'spotify_clone',
+    username: process.env.DB_USER || 'musify',
+    password: process.env.DB_PASSWORD || 'musify_secret',
+    database: process.env.DB_NAME || 'musify_clone',
     logging: false,
-    // SSL Disabled for Docker compatibility
-    // ...(process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1' && {
-    //   dialectOptions: {
-    //     ssl: {
-    //       require: true,
-    //       rejectUnauthorized: false
-    //     }
-    //   }
-    // })
   },
   production: {
     dialect: 'postgres',
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    username: process.env.DB_USER || 'spotify',
-    password: process.env.DB_PASSWORD || 'spotify_secret',
-    database: process.env.DB_NAME || 'spotify_clone',
+    username: process.env.DB_USER || 'musify',
+    password: process.env.DB_PASSWORD || 'musify_secret',
+    database: process.env.DB_NAME || 'musify_clone',
     logging: false,
-    // SSL Disabled for Docker compatibility
-    // ...(process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1' && {
-    //   dialectOptions: {
-    //     ssl: {
-    //       require: true,
-    //       rejectUnauthorized: false
-    //     }
-    //   }
-    // })
   },
 };
 

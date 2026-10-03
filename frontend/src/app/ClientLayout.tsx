@@ -12,10 +12,31 @@ import Avatar from '@mui/material/Avatar';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import MenuIcon from '@mui/icons-material/Menu';
 import theme from '@/theme';
-import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 import { PlayerProvider } from '@/context/PlayerContext';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import PlayerBar from '@/components/PlayerBar/PlayerBar';
+
+function GlobalAuthGuard({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (loading) return;
+    const isAuthRoute = pathname === '/login' || pathname === '/register';
+    
+    if (!user && !isAuthRoute) {
+      router.push('/login');
+    } else if (user && isAuthRoute) {
+      router.push('/');
+    }
+  }, [user, loading, pathname, router]);
+
+  return <>{children}</>;
+}
 
 export default function ClientLayout({
   children,
@@ -28,11 +49,12 @@ export default function ClientLayout({
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <PlayerProvider>
-          {/* Mobile top app bar */}
-          <MobileAppBar onMenuToggle={() => setMobileOpen((o) => !o)} />
+        <GlobalAuthGuard>
+          <PlayerProvider>
+            {/* Mobile top app bar */}
+            <MobileAppBar onMenuToggle={() => setMobileOpen((o) => !o)} />
 
-          <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+            <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
             <Sidebar
               mobileOpen={mobileOpen}
               onMobileClose={() => setMobileOpen(false)}
@@ -61,6 +83,7 @@ export default function ClientLayout({
           </Box>
           <PlayerBar />
         </PlayerProvider>
+        </GlobalAuthGuard>
       </AuthProvider>
     </ThemeProvider>
   );
