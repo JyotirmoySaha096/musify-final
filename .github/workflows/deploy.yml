@@ -17,6 +17,11 @@ jobs:
         run: |
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+          
+          # Inject frontend feature flags for build time
+          echo "NEXT_PUBLIC_ENABLE_MICROSOFT_SSO=false" > frontend/.env.production
+          echo "NEXT_PUBLIC_ENABLE_FACEBOOK_SSO=false" >> frontend/.env.production
+          echo "NEXT_PUBLIC_ENABLE_APPLE_SSO=false" >> frontend/.env.production
 
       - name: Build and Deploy with Docker Compose
         run: |
